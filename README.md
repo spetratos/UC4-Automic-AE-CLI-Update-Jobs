@@ -7,9 +7,21 @@ Command-line interface for Automic / UC4 Automation Engine
 
   - easily automating mundane UC4 / Automic tasks normally done via the UI
   - easily automating mass creation / modification / update routines normally done 
-
   
 => Technology
 
-  - based on Java, but it requires no knowledge of Java to use
+  - based on Java, but it shouldnt require any knowledge of Java to use
+
+=> Prerequisites
+
+  - an Automation Engine available
+  - java installed
+
+=> Ideas of features to implement:
+
+  - get list of all JOBS / JOBP / CALE etc.
+  - get list of executions
+  - execute objects
+  - duplicate objects
+  - etc.
 

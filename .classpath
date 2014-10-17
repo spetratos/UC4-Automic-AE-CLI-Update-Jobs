@@ -2,7 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="C:/Users/bsa/Google Drive/Automic/Developement/Automic/API/uc4.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Automic AE Java API Extended"/>
+	<classpathentry kind="lib" path="/Users/bren/git/automic-ae-java-api-getting-started/uc4.jar"/>
+	<classpathentry kind="lib" path="/Users/bren/git/UC4-Automic---Command-Line-Interface/libraries/commons-cli-1.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/UC4-Automic---Java-API-Framework-Simplified"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

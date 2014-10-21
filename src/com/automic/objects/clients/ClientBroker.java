@@ -1,8 +1,8 @@
 package com.automic.objects.clients;
 
-public class ClientStuff {
+public class ClientBroker {
 
-	public ClientStuff(String params) {
+	public ClientBroker(String params) {
 		// TODO Auto-generated constructor stub
 	}
 

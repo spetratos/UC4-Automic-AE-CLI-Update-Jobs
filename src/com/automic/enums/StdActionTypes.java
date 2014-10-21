@@ -2,7 +2,7 @@ package com.automic.enums;
 
 public enum StdActionTypes {
 
-	LIST(""),
+		LIST(""),
 	  SHOW(""),
 	  UPDATE(""),
 	  DELETE(""),

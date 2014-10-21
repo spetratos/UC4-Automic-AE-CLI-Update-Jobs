@@ -1,0 +1,61 @@
+<?xml version= "1.0"?>
+<config>
+  <object>
+    <name>JOBS</name>
+    <display_name>Job Object</display_name>
+    <type></type>
+    <is_executable>Y</is_executable>
+    <actions>
+        <action>
+        	<action_name>LIST</action_name>
+        	<action_type>STANDARD</action_type>
+        	<action_parameters>
+        	</action_parameters>
+        </action>
+        <action>
+        	<action_name>SET_PRIORITY</action_name>
+        	<action_type>SPECIFIC</action_type>
+        	<action_parameters>
+				<parameter>
+				    <parameter_name>PRIORITY</parameter_name>
+				    <parameter_type>INT</parameter_type>
+				    <parameter_mandatory>Y</parameter_mandatory>
+				    <parameter_default></parameter_default>
+				</parameter>
+					<parameter>
+				    <parameter_name>PRIORITY2</parameter_name>
+				    <parameter_type>INT</parameter_type>
+				    <parameter_mandatory>N</parameter_mandatory>
+				    <parameter_default></parameter_default>
+				</parameter>
+        	</action_parameters>
+        </action>
+    </actions>
+  </object>
+   <object>
+    <name>JOBP</name>
+    <display_name>JobPlan Object</display_name>
+    <type></type>
+    <is_executable>N</is_executable>
+    <actions>
+        <action>
+        	<action_name>LIST</action_name>
+        	<action_type>STANDARD</action_type>
+        	<action_parameters>
+        	</action_parameters>
+        </action>
+        <action>
+        	<action_name>SET_PRIORITY</action_name>
+        	<action_type>SPECIFIC</action_type>
+        	<action_parameters>
+				<parameter>
+				    <parameter_name>PRIORITY</parameter_name>
+				    <parameter_type>INT</parameter_type>
+				    <parameter_mandatory>Y</parameter_mandatory>
+				    <parameter_default></parameter_default>
+				</parameter>
+        	</action_parameters>
+        </action>
+    </actions>
+  </object>
+</config>

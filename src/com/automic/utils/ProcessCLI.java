@@ -6,25 +6,32 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.xml.sax.SAXException;
 
 import com.automic.ConnectionManager;
+import com.automic.config.QueryXML;
+import com.automic.enums.ActionTypes;
+import com.automic.enums.ActionTypesDispatcher;
 import com.automic.enums.ClientActionTypes;
 import com.automic.enums.DoTypes;
 import com.automic.enums.ObjectTypes;
-import com.automic.objects.clients.ClientStuff;
+import com.automic.objects.clients.ClientBroker;
 import com.uc4.api.objects.UC4Object;
 import com.uc4.communication.Connection;
 
 
 public class ProcessCLI {
 
-	public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException{
+	public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException, ParseException, ParserConfigurationException, SAXException, XPathExpressionException{
 		
 		String Object ="";
 		String Action = "";
@@ -63,9 +70,9 @@ public class ProcessCLI {
 		options.addOption( "a", "action", true, "Pick an Action to apply to Objects" );
 		options.addOption( "d", "do", true, "Execute a General action");
 		options.addOption( "p", "params", true, "Parameters");
-		args = new String[]{ "--object", "CLIENT", "--action", "LIST", "--params","VARIABLE=VALUE" };
+		args = new String[]{ "--object", "JOBS", "--action", "LIST", "--params","PRIORITY4=14" };
 
-		try {
+		
 		    // parse the command line arguments
 		    CommandLine line = parser.parse( options, args );
 		
@@ -87,54 +94,50 @@ public class ProcessCLI {
 		    	Object = line.getOptionValue('o');
 		    	Action = line.getOptionValue('a');
 		    	if(line.hasOption('p')){Params = line.getOptionValue('p');}
-		    	if(!ObjectTypes.contains(Object)){
-		    		System.out.println(" -- Wrong Object Type. Here is a list of available ones:");
-		    		System.out.println(java.util.Arrays.asList(ObjectTypes.values()));
-		    	}
-		    	//
-		    	String ClassName = ObjectTypes.valueOf(Object).getActionTypeClass();
-		    	if(!ClientActionTypes.contains(Action)){
-		    		System.out.println(" -- Error, Action is not compatible with Object "+Object+". here is the list:");
-		    		System.out.println(java.util.Arrays.asList(ClientActionTypes.values()));
-		    	}
-		    	
-		    	ClassLoader classLoader = ProcessCLI.class.getClassLoader();
+		    	//if(!ObjectTypes.contains(Object)){
+		    	//	System.out.println(" -- Wrong Object Type. Here is a list of available ones:");
+		    	//	System.out.println(java.util.Arrays.asList(ObjectTypes.values()));
+		    	//}
+		    }
 
-		        try {
-		            Class aClass = classLoader.loadClass(ClassName);
-		            aClass.
-		            System.out.println("aClass.getName() = " + aClass.getName());
-		        } catch (ClassNotFoundException e) {
-		            e.printStackTrace();
-		        }
-		        
-		    
-	
-		    		ProcessObjects myObj = new ProcessObjects(Object,ObjectTypes.valueOf(Object).getActionTypeClass());
-		    	System.out.println(ObjectTypes.valueOf(Object).getActionTypeClass());
-		    	
-	
-		    	
-		    	if(!ObjectTypes.contains(Object)){
-		    		System.out.println(" -- Wrong Object Type. Here is a list of available ones:");
-		    		System.out.println(java.util.Arrays.asList(ObjectTypes.values()));
-		    	}
-		    	
-		    }
-		    if(line.hasOption('d')){
-		    	Do = line.getOptionValue('d');
-		    	Params = line.getOptionValue('p');
-		    	if(!DoTypes.contains(Do)){
-		    		System.out.println(" -- Wrong Do Type. Here is a list of available ones:");
-		    		System.out.println(java.util.Arrays.asList(DoTypes.values()));
-		    	}
-		    }
-		    
-		    
-		    System.out.println(Object+":"+Action+":"+Params);
+					QueryXML query = new QueryXML();
+					
+					if(!query.doesObjectExist(Object)){
+						System.out.println(" -- Error, Object "+Object+" is not available. Here is the list of Objects Available:");
+						System.out.println(query.getListObject().toString());
+						System.exit(1);
+					}
+					if(!query.doesActionExist(Object, Action)){
+						System.out.println(" -- Error, Action "+ Action +" for Object "+ Object + " Does not exist. Here is the list of Actions available:");
+						System.out.println(query.getListActionForObject(Object).toString());
+						System.exit(1);
+					}
+					if(query.doesActionRequireParameters(Object, Action)){
+						Parameters params = new Parameters(Params);
+						if(!params.areAllParamsOK()){
+							System.out.println(" -- Error processing parameters!");
+							System.exit(1);
+						}
+						String[] AllParams = params.getSanitizedParameters();
+						ArrayList<String> MandatoryParams = query.getListMandatoryParametersForAction(Object,Action);
+						for(String param : AllParams){
+							String Name = param.split("=")[0];
+							if(!MandatoryParams.contains(Name)){
+								System.out.println(" -- Error, Mandatory Parameter Missing.");
+								System.out.println("\n %% => List of all Parameters Available:");
+								System.out.println(query.getListParametersForAction(Object,Action));
+								System.out.println("\n %% => List of all MANDATORY Parameters:");
+								System.out.println(query.getListMandatoryParametersForAction(Object,Action));
+							}
+						}
+					}
+					
+					// initiate Broker based on object and Action and Parameters
+					// 
+					ActionTypesDispatcher dispatcher = new ActionTypesDispatcher(Object, Action, Params);
+					
 		}
-		catch( ParseException exp ) {
-		    System.out.println( "Unexpected exception:" + exp.getMessage() );
-		} 
-	}
+		
 }
+
+

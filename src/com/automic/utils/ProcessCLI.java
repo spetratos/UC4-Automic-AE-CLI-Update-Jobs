@@ -1,10 +1,6 @@
 package com.automic.utils;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -12,21 +8,13 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.xml.sax.SAXException;
 
-import com.automic.ConnectionManager;
-import com.automic.config.QueryXML;
-import com.automic.enums.ActionTypes;
+import com.automic.config.QueryListXML;
+import com.automic.config.QueryObjectXML;
 import com.automic.enums.ActionTypesDispatcher;
-import com.automic.enums.ClientActionTypes;
-import com.automic.enums.DoTypes;
-import com.automic.enums.ObjectTypes;
-import com.automic.objects.clients.ClientBroker;
-import com.uc4.api.objects.UC4Object;
-import com.uc4.communication.Connection;
 
 
 public class ProcessCLI {
@@ -36,7 +24,6 @@ public class ProcessCLI {
 		String Object ="";
 		String Action = "";
 		String Params = "";
-		String Do = "";
 		// create the command line parser
 		CommandLineParser parser = new BasicParser();
 
@@ -68,73 +55,88 @@ public class ProcessCLI {
 		Options options = new Options();
 		options.addOption( "o", "object", true, "Pick an Object Type" );
 		options.addOption( "a", "action", true, "Pick an Action to apply to Objects" );
-		options.addOption( "d", "do", true, "Execute a General action");
 		options.addOption( "p", "params", true, "Parameters");
-		args = new String[]{ "--object", "JOBS", "--action", "LIST", "--params","PRIORITY4=14" };
-
+		options.addOption( "h", "help", false, "display help");
 		
+		//args = new String[]{ "--object", "JOBS", "--action", "SHOW", "--params","NAME=JOBS.WIN.TEST" };
+
+		QueryListXML queryList = new QueryListXML("OBJECT_list.xml");
 		    // parse the command line arguments
 		    CommandLine line = parser.parse( options, args );
-		
-		    if( !line.hasOption( 'o' ) && !line.hasOption('d') ) {System.out.println( "Should get at least object or do" );}   
-		    if(line.hasOption('o')){
-		    	if(!line.hasOption('a')){
-		    		System.out.println("Should specify an action with an object!");}
-		    } 
-		    if(line.hasOption('d')){
-		    	if(line.hasOption('o')){System.out.println("cant have object with DO");}
-		    	if(line.hasOption('a')){System.out.println("cant have action with DO");}
-		    	if(line.hasOption('p')){System.out.println("should have params with DO");}
+		    
+		    if(line.hasOption('h') && !line.hasOption( 'o' ) && !line.hasOption( 'a' )) {
+		    	Help.displayHelp();
+		    	System.exit(88);
 		    }
-		    if(line.hasOption('a') || line.hasOption('o')){
-		    	if(line.hasOption('d')){System.out.println("cant have DO and Object or Action");}
-		    	//if(!line.hasOption('p')){System.out.println("should have params with action or object");}
-		    }
-		    if(line.hasOption('o') && line.hasOption('a')){ 	
+		    
+		    if( !line.hasOption( 'o' )) {
+		    	System.out.println( " -- Error, No object specified!");
+		    	System.out.println( "%% => Objects Available: "+queryList.getListObject());  
+		    	System.out.println( "%% => Example: "+"--object "+ queryList.getListObject().get(0));  
+		    	System.exit(99);
+		    }else{
 		    	Object = line.getOptionValue('o');
-		    	Action = line.getOptionValue('a');
-		    	if(line.hasOption('p')){Params = line.getOptionValue('p');}
-		    	//if(!ObjectTypes.contains(Object)){
-		    	//	System.out.println(" -- Wrong Object Type. Here is a list of available ones:");
-		    	//	System.out.println(java.util.Arrays.asList(ObjectTypes.values()));
-		    	//}
+		    	if(!queryList.doesObjectExist(Object)){
+		    		System.out.println( " -- Error, Object is not a valid one!");
+		    		System.out.println( "%% => Objects Available: "+queryList.getListObject());  
+			    	System.exit(99);
+		    	}
 		    }
-
-					QueryXML query = new QueryXML();
+		    
+		    if(line.hasOption('h') && line.hasOption( 'o' ) && !line.hasOption( 'a' )) {
+		    	Help.displayHelpWithObject(Object);
+		    	System.exit(88);
+		    }
+		    
+		    QueryObjectXML query = new QueryObjectXML(Object+"_config.xml");
+		    
+		    if(!line.hasOption('a')){ 	
+		    	System.out.println(" -- Error, No Action specified for Object " + Object + " !");
+		    	System.out.println( "%% => Actions Available: "+query.getListActionForObject(Object)); 
+		    	System.out.println( "%% => Example: "+"--action "+ query.getListActionForObject(Object).get(0));  
+		    	System.exit(99);
+		    }else{
+		    	Action = line.getOptionValue('a');
+		    	if(!query.doesActionExist(Object, Action)){
+		    		System.out.println( " -- Error, Action is not a valid one for Object "+ Object + " !");
+		    		System.out.println( "%% => Actions Available: "+query.getListActionForObject(Object));  
+			    	System.exit(99);
+		    }
+			    if(line.hasOption('h') && line.hasOption( 'o' ) && line.hasOption( 'a' )) {
+			    	Help.displayHelpWithObjectAndAction(Object,Action);
+			    	System.exit(88);
+			    }
+		    }
+		    Params = line.getOptionValue('p');
+		    if(Params == null){Params = "";}
+			if(query.doesActionRequireParameters(Object, Action)){
+				if(Params == null || Params.equals("")){
+					System.out.println(" -- Error, mandatory parameters missing!");
+					System.out.println(" %% => List of ALL Parameters: " + query.getListParametersForAction(Object,Action));
+					System.out.println(" %% => List of MANDATORY Parameters: " + query.getListMandatoryParametersForAction(Object,Action));
+					System.out.println(" %% => FORMAT TO USE: --params \"NAME1=VALUE1;NAME2=VALUE2\"");
+					System.exit(99);
+				}
+				Parameters params = new Parameters(Params);	
+				if(!params.areAllParamsOK()){
+					System.out.println(" -- Error processing parameters!");
+					System.exit(1);
+				}
+				String[] AllParams = params.getSanitizedParameters();
+				ArrayList<String> MandatoryParams = query.getListMandatoryParametersForAction(Object,Action);
+				for(String param : AllParams){
+					String Name = param.split("=")[0];
+					if(!MandatoryParams.contains(Name)){
+						System.out.println(" -- Error, Mandatory Parameter Missing.");
+						System.out.println("\n %% => List of all Parameters Available:");
+						System.out.println(query.getListParametersForAction(Object,Action));
+						System.out.println("\n %% => List of all MANDATORY Parameters:");
+						System.out.println(query.getListMandatoryParametersForAction(Object,Action));
+					}
+				}
+			}
 					
-					if(!query.doesObjectExist(Object)){
-						System.out.println(" -- Error, Object "+Object+" is not available. Here is the list of Objects Available:");
-						System.out.println(query.getListObject().toString());
-						System.exit(1);
-					}
-					if(!query.doesActionExist(Object, Action)){
-						System.out.println(" -- Error, Action "+ Action +" for Object "+ Object + " Does not exist. Here is the list of Actions available:");
-						System.out.println(query.getListActionForObject(Object).toString());
-						System.exit(1);
-					}
-					if(query.doesActionRequireParameters(Object, Action)){
-						Parameters params = new Parameters(Params);
-						if(!params.areAllParamsOK()){
-							System.out.println(" -- Error processing parameters!");
-							System.exit(1);
-						}
-						String[] AllParams = params.getSanitizedParameters();
-						ArrayList<String> MandatoryParams = query.getListMandatoryParametersForAction(Object,Action);
-						for(String param : AllParams){
-							String Name = param.split("=")[0];
-							if(!MandatoryParams.contains(Name)){
-								System.out.println(" -- Error, Mandatory Parameter Missing.");
-								System.out.println("\n %% => List of all Parameters Available:");
-								System.out.println(query.getListParametersForAction(Object,Action));
-								System.out.println("\n %% => List of all MANDATORY Parameters:");
-								System.out.println(query.getListMandatoryParametersForAction(Object,Action));
-							}
-						}
-					}
-					
-					// initiate Broker based on object and Action and Parameters
-					// 
-					ActionTypesDispatcher dispatcher = new ActionTypesDispatcher(Object, Action, Params);
+		ActionTypesDispatcher dispatcher = new ActionTypesDispatcher(Object, Action, Params);
 					
 		}
 		

@@ -17,18 +17,18 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-public class QueryXML {
+public class QueryObjectXML {
 
 	XPath xpath;
 	Document doc;
 
-	public QueryXML() throws ParserConfigurationException, SAXException,
+	public QueryObjectXML(String Filename) throws ParserConfigurationException, SAXException,
 			IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
 		builder = factory.newDocumentBuilder();
-		URL url = getClass().getResource("OBJECT_config.xml");
+		URL url = getClass().getResource(Filename);
 		doc = builder.parse(url.toString());
 		XPathFactory xFactory = XPathFactory.newInstance();
 		xpath = xFactory.newXPath();
@@ -44,7 +44,7 @@ public class QueryXML {
 	public boolean doesActionRequireParameters(String ObjectName, String ActionName) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException{
 		XPathExpression expr = xpath.compile("//object[name='" + ObjectName
 				+ "']/actions/action[action_name='" + ActionName + "']"
-				+ "/action_parameters/parameter/text()");
+				+ "/action_parameters/parameter[parameter_mandatory=Y]/text()");
 		Object result = expr.evaluate(doc, XPathConstants.NODESET);
 		NodeList nodes = (NodeList) result;
 		if(nodes.getLength()==0){return false;}
@@ -78,7 +78,17 @@ public class QueryXML {
 		NodeList nodes = (NodeList) result;
 		return nodes.item(0).getNodeValue();
 	}
-
+	public boolean isParameterMandatory(String ObjectName, String ActionName,
+			String ParameterName) throws XPathExpressionException {
+		XPathExpression expr = xpath.compile("//object[name='" + ObjectName
+				+ "']/actions/action[action_name='" + ActionName + "']"
+				+ "/action_parameters/parameter[parameter_name='"
+				+ ParameterName + "']/parameter_mandatory/text()");
+		Object result = expr.evaluate(doc, XPathConstants.NODESET);
+		NodeList nodes = (NodeList) result;
+		if(nodes.item(0).getNodeValue().equalsIgnoreCase("Y")){return true;}
+		else{return false;}
+	}
 	public ArrayList<String> getListParametersForAction(String ObjectName,
 			String ActionName) throws ParserConfigurationException,
 			SAXException, IOException, XPathExpressionException {

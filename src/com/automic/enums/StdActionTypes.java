@@ -1,7 +1,7 @@
 package com.automic.enums;
 
 public enum StdActionTypes {
-
+/*
 		LIST(""),
 	  SHOW(""),
 	  UPDATE(""),
@@ -24,4 +24,5 @@ public enum StdActionTypes {
 	    for (StdActionTypes c : StdActionTypes.values()) {if (c.name().equals(str)) {return true;}}
 	    return false;
 	}
+	*/
 }

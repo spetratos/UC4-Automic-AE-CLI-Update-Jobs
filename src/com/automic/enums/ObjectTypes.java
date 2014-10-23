@@ -2,7 +2,7 @@ package com.automic.enums;
 
 public enum ObjectTypes {
 	//JOBS, JOBP, SCRI, VARA, CALL, QUEUE, LOGIN, JOBF, CONN, HOSTG, FILTER, CALE, USRG, EVNT, FOLD, PRPT
-	  JOBS("JOBS"),
+	/*  JOBS("JOBS"),
 	  JOBP("JOBS"),
 	  SCRI("JOBS"),
 	  VARA("JOBS"),
@@ -34,4 +34,5 @@ public enum ObjectTypes {
 		    for (ObjectTypes c : ObjectTypes.values()) {if (c.name().equals(str)) {return true;}}
 		    return false;
 		}
+		*/
 }

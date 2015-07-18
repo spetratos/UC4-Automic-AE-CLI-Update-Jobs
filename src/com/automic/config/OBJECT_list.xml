@@ -1,7 +1,0 @@
-<?xml version= "1.0"?>
-<config>
-  <object>
-    <name>JOBS</name>
-    <display_name>Job Object</display_name>
-  </object>
-</config>

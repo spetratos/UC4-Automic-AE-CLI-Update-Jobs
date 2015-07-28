@@ -82,6 +82,8 @@ public class ProcessSpecificCLI {
 	    
 	    // 3- keep the following one.. it will display help automatically
 	    if( line.hasOption( "h" )) {
+	    	System.out.println("Program: "+Version.getName() + " - " +Version.getDescription());
+	    	System.out.println("Version: "+Version.getVersion()+"\n");
 	    	HelpFormatter formatter = new HelpFormatter();
 	    	formatter.printHelp(100,"java -jar Command.jar","\n++ Parameters Are: \n\n", options,"", true );
 	    	System.exit(0);

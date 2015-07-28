@@ -16,6 +16,7 @@ import org.apache.commons.cli.ParseException;
 import org.xml.sax.SAXException;
 
 import com.automic.AECredentials;
+import com.automic.specifics.Version;
 
 public class ProcessStandardCLI {
 
@@ -72,6 +73,8 @@ public class ProcessStandardCLI {
 		    CommandLine line = parser.parse( CredentialOptions, args );
 		    
 		    if(line.hasOption("help")) {
+		    	System.out.println("Program: "+Version.getName() + " - " +Version.getDescription());
+		    	System.out.println("Version: "+Version.getVersion()+"\n");
 		    	HelpFormatter formatter = new HelpFormatter();
 		    	formatter.printHelp( "java -jar Command.jar", CredentialOptions, true );
 		    	System.exit(0);

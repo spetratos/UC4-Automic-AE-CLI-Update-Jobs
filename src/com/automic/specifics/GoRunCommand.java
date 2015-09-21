@@ -1,6 +1,7 @@
 package com.automic.specifics;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -62,6 +63,26 @@ public class GoRunCommand {
 				Job job = (Job) obj; 
 				
 				System.out.println(" ++ Updating Job Definition for Job: " + ObjectName);
+
+				
+				if(ProcessSpecificCLI.ADDVARIABLE && !ProcessSpecificCLI.ERRORINVARIABLE){
+					
+					System.out.println("  => Adding Variable: "+ProcessSpecificCLI.VARNAME +" with Value: "+ProcessSpecificCLI.VARVALUE);
+					job.values().addValue(ProcessSpecificCLI.VARNAME, ProcessSpecificCLI.VARVALUE,false);
+				}
+				
+				if(ProcessSpecificCLI.REMOVEVARIABLE && !ProcessSpecificCLI.ERRORINVARIABLE){
+					System.out.println("  => Removing Variable: "+ProcessSpecificCLI.VARNAME);
+					job.values().removeValue(ProcessSpecificCLI.VARNAME);
+				}
+				
+				if(ProcessSpecificCLI.UPDATEVARIABLE && !ProcessSpecificCLI.ERRORINVARIABLE){
+					System.out.println("  => Updating Variable: "+ProcessSpecificCLI.VARNAME +" with Value: "+ProcessSpecificCLI.VARVALUE);
+					job.values().removeValue(ProcessSpecificCLI.VARNAME);
+					
+					job.values().addValue(ProcessSpecificCLI.VARNAME, ProcessSpecificCLI.VARVALUE,true);
+				}
+				
 				if(!ProcessSpecificCLI.JOBLOGIN.equals("")){System.out.println("  => Changing Login to: "+ProcessSpecificCLI.JOBLOGIN);job.attributes().setLogin(new UC4ObjectName(ProcessSpecificCLI.JOBLOGIN));}
 				if(!ProcessSpecificCLI.JOBHOST.equals("")){System.out.println("  => Changing Host to: "+ProcessSpecificCLI.JOBHOST);job.attributes().setHost(new UC4HostName(ProcessSpecificCLI.JOBHOST));}
 				if(!ProcessSpecificCLI.JOBPROCESS.equals("")){System.out.println("  => Changing Process");job.setProcess(ProcessSpecificCLI.JOBPROCESS);}
@@ -72,7 +93,8 @@ public class GoRunCommand {
 				if(!ProcessSpecificCLI.JOBTZ.equals("")){System.out.println("  => Changing Timezone to: "+ProcessSpecificCLI.JOBTZ);job.attributes().setTimezone(new UC4TimezoneName(ProcessSpecificCLI.JOBTZ));}
 				if(ProcessSpecificCLI.JOBPRIORITY != 0){System.out.println("  => Changing Priority to: "+ProcessSpecificCLI.JOBPRIORITY);job.attributes().setPriority(ProcessSpecificCLI.JOBPRIORITY);}
 				if(ProcessSpecificCLI.JOBGENERATEATRUNTIME){System.out.println("  => Changing Generate At Runtime");job.attributes().setGenerateAtRuntime(true);}
-				if(!ProcessSpecificCLI.JOBACTIVE){System.out.println("  => Changing Job Active to: "+ProcessSpecificCLI.JOBACTIVE);job.header().setActive(false);}
+				if(ProcessSpecificCLI.JOBACTIVE){System.out.println("  => Activate Job");job.header().setActive(true);}
+				if(ProcessSpecificCLI.JOBINACTIVE){System.out.println("  => Deactivate Job");job.header().setActive(false);}
 				
 				System.out.println("");
 				Objbroker.common.saveAndCloseObject(job);

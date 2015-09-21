@@ -23,9 +23,20 @@ public class ProcessSpecificCLI {
 	public static int JOBPRIORITY = 0;
 	public static boolean JOBGENERATEATRUNTIME = false;
 	public static int JOBMAXNUMBERRUN = 0;
-	public static boolean JOBACTIVE = true;
+	public static boolean JOBACTIVE = false;
+	public static boolean JOBINACTIVE = false;
 	public static String JOBPREPROCESS = "";
 	public static String JOBPOSTPROCESS = "";
+	
+	public static boolean ADDVARIABLE = false;
+	public static boolean REMOVEVARIABLE = false;
+	public static boolean UPDATEVARIABLE = false;
+	
+	public static boolean ERRORINVARIABLE = false;
+	
+	public static String VARNAME = "";
+	public static String VARVALUE = "";
+	
 	public static boolean SIMULATE = false;
 	
 	public static void processSpecificParameters(String[] args) throws ParseException {
@@ -34,22 +45,36 @@ public class ProcessSpecificCLI {
 		Options options = new Options();
 
 		// 1- add your options below this line
-		options.addOption( "jobname", "jobname", true, "[MANDATORY] Job Name To Create" );
+		options.addOption( "jobname", true, "[MANDATORY] Job Name To Update (can use '*' or '?')" );
 		//options.addOption( "template", "template", true, "[MANDATORY] Template for Job [JOBS.WIN, JOBS.UNX, etc.]");
 		//options.addOption( "folder", "folder", true, "[MANDATORY] Existing folder where Job is to be created");
-		options.addOption( "login", "login", true, "[OPTIONAL] Login used in Job" );
-		options.addOption( "host", "host", true, "[OPTIONAL] Host used in Job");
-		options.addOption( "process", "process", true, "[OPTIONAL] Process for Job");
-		options.addOption( "title", "title", true, "[OPTIONAL] Title for Job");
-		options.addOption( "queue", "queue", true, "[OPTIONAL] Queue for Job");
-		options.addOption( "timezone", "timezone", true, "[OPTIONAL] Timezone for Job");
-		options.addOption( "priority", "priority", true, "[OPTIONAL] Priority for Job");
-		options.addOption( "genatruntime", "genatruntime", false, "[OPTIONAL] FLAG - Generate at Runtime");
-		options.addOption( "simulate", "simulate", false, "[OPTIONAL] Simulate Update (does not update anything)" );
+		options.addOption( "login", true, "[OPTIONAL] Login used in Job" );
+		options.addOption( "host", true, "[OPTIONAL] Host used in Job");
+		options.addOption( "process", true, "[OPTIONAL] Process for Job");
+		options.addOption( "title", true, "[OPTIONAL] Title for Job");
+		options.addOption( "queue", true, "[OPTIONAL] Queue for Job");
+		options.addOption( "timezone", true, "[OPTIONAL] Timezone for Job");
+		options.addOption( "priority", true, "[OPTIONAL] Priority for Job");
+		options.addOption( "genatruntime", false, "[OPTIONAL] FLAG - Generate at Runtime");
+		options.addOption( "simulate", false, "[OPTIONAL] Simulate Update (does not update anything)" );
 		//options.addOption( "maxparallelrun", "maxparallelrun", true, "[OPTIONAL] Max Parallel Runs for Job (Default:0)");
-		options.addOption( "inactive", "inactive", false, "[OPTIONAL] FLAG - Deactivate Job (Default:Active)");
-		options.addOption( "preprocess", "preprocess", true, "[OPTIONAL] Pre-Process for Job");
-		options.addOption( "postprocess", "postprocess", true, "[OPTIONAL] Post-Process for Job");
+		options.addOption( "inactive", false, "[OPTIONAL] - Deactivate Job");
+		options.addOption( "active", false, "[OPTIONAL] - Activate Job");
+		options.addOption( "preprocess", true, "[OPTIONAL] Pre-Process for Job");
+		options.addOption( "postprocess", true, "[OPTIONAL] Post-Process for Job");
+		
+		options.addOption( "varadd", false, "[OPTIONAL] Add Variable and Value to Job \n"
+				+ "	  => Requires -variable option (represents Variable name)\n"
+				+ "	  => Requires -value option (represents Variable value)\n");
+		options.addOption( "varrem", false, "[OPTIONAL] Remove Variable from Job \n"
+							+ "	  => Requires -variable option (represents Variable name)\n"
+							+ "	  => Requires -value option (represents Variable value)\n");
+		options.addOption( "varupd", false, "[OPTIONAL] Update Value of a Variable in Job \n"
+				+ "	  => Requires -variable option (represents Variable name)\n");
+		
+		options.addOption( "variable", true, ".. only used with varupd, varrem and varadd options");
+		options.addOption( "value", true, ".. only used with varupd and varadd options");
+	
 		options.addOption( "h", "help", false, "display help");
 		
 		// parse the command line arguments
@@ -66,6 +91,69 @@ public class ProcessSpecificCLI {
 	    if( line.hasOption( "queue" )) {JOBQUEUE = line.getOptionValue("queue");}
 	    if( line.hasOption( "timezone" )) {JOBTZ = line.getOptionValue("timezone");}
 	    if( line.hasOption( "simulate" )) {SIMULATE = true;}
+	    
+	    boolean LockOnVariableAction = false;
+	    
+	    if( line.hasOption("varadd")){
+	    	if(!LockOnVariableAction){
+	    		ADDVARIABLE = true;
+	    		LockOnVariableAction=true;
+	    		if(! line.hasOption( "variable" )){
+	    			System.out.println(" -- Error. Variable Name missing. Parameter to add is \"-variable\"");
+	    			ERRORINVARIABLE = true;
+	    		}
+	    		if(! line.hasOption( "value" )){
+	    			System.out.println(" -- Error. Variable Value missing. Parameter to add is \"-value\"");
+	    			ERRORINVARIABLE = true;
+	    		}
+	    		if (!ERRORINVARIABLE){
+	    			VARNAME = line.getOptionValue("variable");
+	    			VARVALUE = line.getOptionValue("value");
+	    		}
+	    	
+	    	}
+	    }
+
+	    if( line.hasOption("varupd")){
+	    	if(!LockOnVariableAction){
+	    		UPDATEVARIABLE = true;LockOnVariableAction=true;
+
+	    		if(! line.hasOption( "variable" )){
+	    			System.out.println(" -- Error. Variable Name missing. Parameter to add is \"-variable\"");
+	    			ERRORINVARIABLE = true;
+	    		}
+	    		if(! line.hasOption( "value" )){
+	    			System.out.println(" -- Error. Variable Value missing. Parameter to add is \"-value\"");
+	    			ERRORINVARIABLE = true;
+	    		}
+	    		if (!ERRORINVARIABLE){
+	    			VARNAME = line.getOptionValue("variable");
+	    			VARVALUE = line.getOptionValue("value");
+	    		}
+	    	}
+	    }
+	    
+	    if( line.hasOption("varrem")){
+	    	if(!LockOnVariableAction){
+	    		REMOVEVARIABLE = true;LockOnVariableAction=true;
+
+	    		if(! line.hasOption( "variable" )){
+	    			System.out.println(" -- Error. Variable Name missing. Parameter to add is \"-variable\"");
+	    			ERRORINVARIABLE = true;
+	    		}
+
+	    		if (!ERRORINVARIABLE){
+	    			VARNAME = line.getOptionValue("variable");
+	    		}
+	    	
+	    	}
+	    }
+
+	    // We need to add a & in front of the variable name if it isnt provided..
+	    VARNAME = VARNAME.toUpperCase();
+	    if(!VARNAME.startsWith("&")){
+	    	VARNAME = "&"+VARNAME;
+	    }
 	    if( line.hasOption( "priority" )) {
 	    	if(isInteger(line.getOptionValue("priority"))){
     		JOBPRIORITY = Integer.parseInt(line.getOptionValue("priority"));}
@@ -79,7 +167,8 @@ public class ProcessSpecificCLI {
 	  //  	}else{
 	  //  		System.out.println(" -- Error. Job Max Parallel Runs is expected as a Number: "+line.getOptionValue("maxparallelrun"));}
 	  //  }
-	    if( line.hasOption( "inactive" )) {JOBACTIVE = false;}
+	    if( line.hasOption( "active" )) {JOBACTIVE = true;}
+	    if( line.hasOption( "inactive" )) {JOBACTIVE = true;}
 	    if( line.hasOption( "preprocess" )) {JOBPREPROCESS = line.getOptionValue("preprocess");}
 	    if( line.hasOption( "postprocess" )) {JOBPOSTPROCESS = line.getOptionValue("postprocess");}
 	    

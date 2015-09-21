@@ -15,8 +15,8 @@ public class ProcessSpecificCLI {
 	public static String JOBLOGIN = "";
 	public static String JOBHOST = "";
 	public static String JOBPROCESS = "";
-	public static String JOBTEMPLATE = "";
-	public static String JOBFOLDER = "";
+	//public static String JOBTEMPLATE = "";
+	//public static String JOBFOLDER = "";
 	public static String JOBTITLE = "";
 	public static String JOBQUEUE = "";
 	public static String JOBTZ = "";
@@ -26,6 +26,7 @@ public class ProcessSpecificCLI {
 	public static boolean JOBACTIVE = true;
 	public static String JOBPREPROCESS = "";
 	public static String JOBPOSTPROCESS = "";
+	public static boolean SIMULATE = false;
 	
 	public static void processSpecificParameters(String[] args) throws ParseException {
 		
@@ -34,8 +35,8 @@ public class ProcessSpecificCLI {
 
 		// 1- add your options below this line
 		options.addOption( "jobname", "jobname", true, "[MANDATORY] Job Name To Create" );
-		options.addOption( "template", "template", true, "[MANDATORY] Template for Job [JOBS.WIN, JOBS.UNX, etc.]");
-		options.addOption( "folder", "folder", true, "[MANDATORY] Existing folder where Job is to be created");
+		//options.addOption( "template", "template", true, "[MANDATORY] Template for Job [JOBS.WIN, JOBS.UNX, etc.]");
+		//options.addOption( "folder", "folder", true, "[MANDATORY] Existing folder where Job is to be created");
 		options.addOption( "login", "login", true, "[OPTIONAL] Login used in Job" );
 		options.addOption( "host", "host", true, "[OPTIONAL] Host used in Job");
 		options.addOption( "process", "process", true, "[OPTIONAL] Process for Job");
@@ -44,6 +45,7 @@ public class ProcessSpecificCLI {
 		options.addOption( "timezone", "timezone", true, "[OPTIONAL] Timezone for Job");
 		options.addOption( "priority", "priority", true, "[OPTIONAL] Priority for Job");
 		options.addOption( "genatruntime", "genatruntime", false, "[OPTIONAL] FLAG - Generate at Runtime");
+		options.addOption( "simulate", "simulate", false, "[OPTIONAL] Simulate Update (does not update anything)" );
 		//options.addOption( "maxparallelrun", "maxparallelrun", true, "[OPTIONAL] Max Parallel Runs for Job (Default:0)");
 		options.addOption( "inactive", "inactive", false, "[OPTIONAL] FLAG - Deactivate Job (Default:Active)");
 		options.addOption( "preprocess", "preprocess", true, "[OPTIONAL] Pre-Process for Job");
@@ -58,11 +60,12 @@ public class ProcessSpecificCLI {
 	    if( line.hasOption( "login" )) {JOBLOGIN = line.getOptionValue("login");}
 	    if( line.hasOption( "host" )) {JOBHOST = line.getOptionValue("host");}
 	    if( line.hasOption( "process" )) {JOBPROCESS = line.getOptionValue("process");}
-	    if( line.hasOption( "template" )) {JOBTEMPLATE = line.getOptionValue("template");}
-	    if( line.hasOption( "folder" )) {JOBFOLDER = line.getOptionValue("folder");}
+	   // if( line.hasOption( "template" )) {JOBTEMPLATE = line.getOptionValue("template");}
+	   // if( line.hasOption( "folder" )) {JOBFOLDER = line.getOptionValue("folder");}
 	    if( line.hasOption( "title" )) {JOBTITLE = line.getOptionValue("title");}
 	    if( line.hasOption( "queue" )) {JOBQUEUE = line.getOptionValue("queue");}
 	    if( line.hasOption( "timezone" )) {JOBTZ = line.getOptionValue("timezone");}
+	    if( line.hasOption( "simulate" )) {SIMULATE = true;}
 	    if( line.hasOption( "priority" )) {
 	    	if(isInteger(line.getOptionValue("priority"))){
     		JOBPRIORITY = Integer.parseInt(line.getOptionValue("priority"));}
@@ -92,8 +95,8 @@ public class ProcessSpecificCLI {
 	    // 4- check only mandatory parameters!!
 	    boolean ERROR_FREE=true;
 	    if(JOBNAME.equals("")){System.out.println(" -- Error: Missing Jobname. Use -h for help.");ERROR_FREE=false;}
-	    if(JOBTEMPLATE.equals("")){System.out.println(" -- Error: Missing Job Template for job. Use -h for help.");ERROR_FREE=false;}
-	    if(JOBFOLDER.equals("")){System.out.println(" -- Error: Missing Folder name for job. Use -h for help.");ERROR_FREE=false;}
+	   // if(JOBTEMPLATE.equals("")){System.out.println(" -- Error: Missing Job Template for job. Use -h for help.");ERROR_FREE=false;}
+	    //if(JOBFOLDER.equals("")){System.out.println(" -- Error: Missing Folder name for job. Use -h for help.");ERROR_FREE=false;}
 	    
 	    if(!ERROR_FREE){
 	    	System.out.println("\n -- Error(s) encountered. Please fix them and rerun.");

@@ -1,6 +1,7 @@
 package com.automic.specifics;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -12,6 +13,7 @@ import com.automic.AECredentials;
 import com.automic.ConnectionManager;
 import com.automic.objects.ObjectBroker;
 import com.automic.std.ProcessStandardCLI;
+import com.uc4.api.SearchResultItem;
 import com.uc4.api.Template;
 import com.uc4.api.UC4HostName;
 import com.uc4.api.UC4ObjectName;
@@ -36,23 +38,54 @@ public class GoRunCommand {
 		ObjectBroker Objbroker = new ObjectBroker(ClientConnection,false);
 	
 		//2- retrieve your parameters.. and do what you want.
-		IFolder myFolder = Objbroker.folders.getFolderByName(ProcessSpecificCLI.JOBFOLDER);
-		Objbroker.jobs.createJob(ProcessSpecificCLI.JOBNAME, ProcessSpecificCLI.JOBTEMPLATE, myFolder);
+		List<SearchResultItem> list = Objbroker.common.searchJobs(ProcessSpecificCLI.JOBNAME);
 		
-		UC4Object obj = Objbroker.common.openObject(ProcessSpecificCLI.JOBNAME, false);
-		Job job = (Job) obj; 
-		if(!ProcessSpecificCLI.JOBLOGIN.equals("")){job.attributes().setLogin(new UC4ObjectName(ProcessSpecificCLI.JOBLOGIN));}
-		if(!ProcessSpecificCLI.JOBHOST.equals("")){job.attributes().setHost(new UC4HostName(ProcessSpecificCLI.JOBHOST));}
-		if(!ProcessSpecificCLI.JOBPROCESS.equals("")){job.setProcess(ProcessSpecificCLI.JOBPROCESS);}
-		if(!ProcessSpecificCLI.JOBPREPROCESS.equals("")){job.setPreProcess(ProcessSpecificCLI.JOBPREPROCESS);}
-		if(!ProcessSpecificCLI.JOBPOSTPROCESS.equals("")){job.setPostProcess(ProcessSpecificCLI.JOBPOSTPROCESS);}
-		if(!ProcessSpecificCLI.JOBTITLE.equals("")){job.header().setTitle(ProcessSpecificCLI.JOBTITLE);}
-		if(!ProcessSpecificCLI.JOBQUEUE.equals("")){job.attributes().setQueue(new UC4ObjectName(ProcessSpecificCLI.JOBQUEUE));}
-		if(!ProcessSpecificCLI.JOBTZ.equals("")){job.attributes().setTimezone(new UC4TimezoneName(ProcessSpecificCLI.JOBTZ));}
-		if(ProcessSpecificCLI.JOBPRIORITY != 0){job.attributes().setPriority(ProcessSpecificCLI.JOBPRIORITY);}
-		if(ProcessSpecificCLI.JOBGENERATEATRUNTIME){job.attributes().setGenerateAtRuntime(true);}
-		if(!ProcessSpecificCLI.JOBACTIVE){job.header().setActive(false);}
 		
-		Objbroker.common.saveAndCloseObject(job);
+		if(ProcessSpecificCLI.SIMULATE){
+			System.out.println("Simulation Mode - Nothing will be updated. List of Jobs Selected:");
+		}
+		
+		if(list.size() == 0){
+			System.out.println(" %% => No Job Was Found for name: "+ProcessSpecificCLI.JOBNAME);
+		}
+		
+		for(int i=0;i<list.size();i++){
+			
+			String ObjectName = list.get(i).getName();
+			
+			if(ProcessSpecificCLI.SIMULATE){
+				System.out.println("  => Job Found: " + ObjectName);
+			}
+			else{
+				
+				UC4Object obj = Objbroker.common.openObject(ObjectName, false);
+				Job job = (Job) obj; 
+				
+				System.out.println(" ++ Updating Job Definition for Job: " + ObjectName);
+				if(!ProcessSpecificCLI.JOBLOGIN.equals("")){System.out.println("  => Changing Login to: "+ProcessSpecificCLI.JOBLOGIN);job.attributes().setLogin(new UC4ObjectName(ProcessSpecificCLI.JOBLOGIN));}
+				if(!ProcessSpecificCLI.JOBHOST.equals("")){System.out.println("  => Changing Host to: "+ProcessSpecificCLI.JOBHOST);job.attributes().setHost(new UC4HostName(ProcessSpecificCLI.JOBHOST));}
+				if(!ProcessSpecificCLI.JOBPROCESS.equals("")){System.out.println("  => Changing Process");job.setProcess(ProcessSpecificCLI.JOBPROCESS);}
+				if(!ProcessSpecificCLI.JOBPREPROCESS.equals("")){System.out.println("  => Changing Pre-Process");job.setPreProcess(ProcessSpecificCLI.JOBPREPROCESS);}
+				if(!ProcessSpecificCLI.JOBPOSTPROCESS.equals("")){System.out.println("  => Changing Post-Process");job.setPostProcess(ProcessSpecificCLI.JOBPOSTPROCESS);}
+				if(!ProcessSpecificCLI.JOBTITLE.equals("")){System.out.println("  => Changing Title to: "+ProcessSpecificCLI.JOBTITLE);job.header().setTitle(ProcessSpecificCLI.JOBTITLE);}
+				if(!ProcessSpecificCLI.JOBQUEUE.equals("")){System.out.println("  => Changing Queue to: "+ProcessSpecificCLI.JOBQUEUE);job.attributes().setQueue(new UC4ObjectName(ProcessSpecificCLI.JOBQUEUE));}
+				if(!ProcessSpecificCLI.JOBTZ.equals("")){System.out.println("  => Changing Timezone to: "+ProcessSpecificCLI.JOBTZ);job.attributes().setTimezone(new UC4TimezoneName(ProcessSpecificCLI.JOBTZ));}
+				if(ProcessSpecificCLI.JOBPRIORITY != 0){System.out.println("  => Changing Priority to: "+ProcessSpecificCLI.JOBPRIORITY);job.attributes().setPriority(ProcessSpecificCLI.JOBPRIORITY);}
+				if(ProcessSpecificCLI.JOBGENERATEATRUNTIME){System.out.println("  => Changing Generate At Runtime");job.attributes().setGenerateAtRuntime(true);}
+				if(!ProcessSpecificCLI.JOBACTIVE){System.out.println("  => Changing Job Active to: "+ProcessSpecificCLI.JOBACTIVE);job.header().setActive(false);}
+				
+				System.out.println("");
+				Objbroker.common.saveAndCloseObject(job);
+			}
+			
+
+			
+			
+		}
+			
+		
+		
+		
+	
 	}
 }

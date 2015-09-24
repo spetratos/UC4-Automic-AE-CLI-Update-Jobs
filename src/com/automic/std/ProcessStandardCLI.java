@@ -3,18 +3,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.xml.sax.SAXException;
-
 import com.automic.AECredentials;
 import com.automic.specifics.Version;
 
@@ -38,19 +34,17 @@ public class ProcessStandardCLI {
 			Properties configFile = new java.util.Properties();
 			configFile.load(file);
 			file.close();
-			HOSTNAME = configFile.getProperty("AE_IP_ADR");
-			PORT = Integer.parseInt(configFile.getProperty("AE_PRIMARY_PORT")); 
-			CLIENT = Integer.parseInt(configFile.getProperty("AE_CLIENT"));
-			LOGIN = configFile.getProperty("AE_LOGIN"); 
-			DEPT = configFile.getProperty("AE_DEPT"); 
-			PASSWORD = configFile.getProperty("AE_PASSWORD"); 
-			
-			// if password is encrypted in config file then we decrypt before executing
-			if (PASSWORD.subSequence(0, 2).equals("--")){
-				String pwd = CryptoUtils.decode(PASSWORD.substring(2));
-				PASSWORD = pwd;
-			}
-			}
+
+			if(configFile.containsKey("AE_IP_ADR")){HOSTNAME = configFile.getProperty("AE_IP_ADR");}
+			if(configFile.containsKey("AE_PRIMARY_PORT")){PORT = Integer.parseInt(configFile.getProperty("AE_PRIMARY_PORT"));}
+			if(configFile.containsKey("AE_CLIENT")){CLIENT = Integer.parseInt(configFile.getProperty("AE_CLIENT"));}
+			if(configFile.containsKey("AE_LOGIN")){LOGIN = configFile.getProperty("AE_LOGIN");}
+			if(configFile.containsKey("AE_DEPT")){DEPT = configFile.getProperty("AE_DEPT");}
+			if(configFile.containsKey("AE_PASSWORD")){PASSWORD = configFile.getProperty("AE_PASSWORD");}
+	
+		}else{
+			System.out.println(" %% Warning: No Config File Found. Expected: connection.config");
+		}
 		
 		// create the command line parser
 		CommandLineParser parser = new ExtendedParser(true);
@@ -103,6 +97,12 @@ public class ProcessStandardCLI {
 		    if(DEPT.equals("")){System.out.println(" -- Error: Missing Department for AE. It must be provided either in connection.config file or as a parameter. Use -help for help.");ERROR_FREE=false;}
 		    if(PASSWORD.equals("")){System.out.println(" -- Error: Missing Password for AE. It must be provided either in connection.config file or as a parameter. Use -help for help.");ERROR_FREE=false;}
 		    
+			// if password is encrypted in config file then we decrypt before executing
+			if (PASSWORD.subSequence(0, 2).equals("--")){
+				String pwd = CryptoUtils.decode(PASSWORD.substring(2));
+				PASSWORD = pwd;
+			}
+			
 		    if(!ERROR_FREE){
 		    	System.out.println("\n -- Error(s) encountered. Please fix them and rerun.");
 		    	System.exit(1);

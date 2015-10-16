@@ -1,6 +1,7 @@
 package com.automic.specifics;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,11 +20,13 @@ import com.uc4.api.Template;
 import com.uc4.api.UC4HostName;
 import com.uc4.api.UC4ObjectName;
 import com.uc4.api.UC4TimezoneName;
+import com.uc4.api.objects.CustomAttribute;
 import com.uc4.api.objects.DeactivateCondition;
 import com.uc4.api.objects.IFolder;
 import com.uc4.api.objects.Job;
 import com.uc4.api.objects.UC4Object;
 import com.uc4.communication.Connection;
+import com.uc4.communication.requests.SearchObject;
 
 public class GoRunCommand {
 
@@ -39,71 +42,249 @@ public class GoRunCommand {
 		ObjectBroker Objbroker = new ObjectBroker(ClientConnection,false);
 	
 		//2- retrieve your parameters.. and do what you want.
-		List<SearchResultItem> list = Objbroker.common.searchJobs(ProcessSpecificCLI.JOBNAME);
+		List<SearchResultItem> GlobalList = Objbroker.common.searchJobs(ProcessSpecificCLI.FILTER_NAME);
+		List<SearchResultItem> FilteredList = new ArrayList<SearchResultItem>();
+		for(int i=0;i< GlobalList.size();i++){
+			Job job = (Job) Objbroker.common.openObject(GlobalList.get(i).getName(), true);
 		
-		
+			boolean JobSelected = true;
+			if(JobSelected && ProcessSpecificCLI.FILTER_ACTIVE.equals("Y")){ if(!job.header().isActive()) {JobSelected = false;}}
+			if(JobSelected && ProcessSpecificCLI.FILTER_ACTIVE.equals("N")){  if(job.header().isActive()) {JobSelected = false;}}
+			if(JobSelected && !ProcessSpecificCLI.FILTER_ARCHIVE1.equals("")){  if(!job.header().getArchiveKey1().matches(ProcessSpecificCLI.FILTER_ARCHIVE1)) {JobSelected = false;}}
+			if(JobSelected && !ProcessSpecificCLI.FILTER_ARCHIVE2.equals("")){ if(!job.header().getArchiveKey2().matches(ProcessSpecificCLI.FILTER_ARCHIVE2)) {JobSelected = false;}}
+			if(JobSelected && !ProcessSpecificCLI.FILTER_TITLE.equals("")){ if(!job.header().getTitle().matches(ProcessSpecificCLI.FILTER_TITLE)) {JobSelected = false;}}
+			if(JobSelected && !ProcessSpecificCLI.FILTER_HOST.equals("")){ if(!job.attributes().getHost().toString().matches(ProcessSpecificCLI.FILTER_HOST)) {JobSelected = false;}}
+			if(JobSelected && !ProcessSpecificCLI.FILTER_LOGIN.equals("")){ if(!job.attributes().getLogin().toString().matches(ProcessSpecificCLI.FILTER_LOGIN)) {JobSelected = false;}}		
+			if(JobSelected && !ProcessSpecificCLI.FILTER_POSTPROCESS_KEYWORD.equals("")){ if(!job.getProcess().matches(ProcessSpecificCLI.FILTER_POSTPROCESS_KEYWORD)) {JobSelected = false;}}
+			if(JobSelected && !ProcessSpecificCLI.FILTER_PREPROCESS_KEYWORD.equals("")){ if(!job.getPreProcess().matches(ProcessSpecificCLI.FILTER_PREPROCESS_KEYWORD)) {JobSelected = false;}}
+			if(JobSelected && !ProcessSpecificCLI.FILTER_PROCESS_KEYWORD.equals("")){ if(!job.getPostProcess().matches(ProcessSpecificCLI.FILTER_PROCESS_KEYWORD)) {JobSelected = false;}}
+			if(JobSelected && !ProcessSpecificCLI.FILTER_QUEUE.equals("")){ if(!job.attributes().getQueue().toString().matches(ProcessSpecificCLI.FILTER_QUEUE)) {JobSelected = false;}}
+			
+			if(JobSelected && !ProcessSpecificCLI.FILTER_METADATA_NAME.equals("")){ 
+				boolean AttNameFound = false;
+				Iterator<CustomAttribute> it = job.header().customAttributeIterator();
+				while(it.hasNext()){
+					CustomAttribute attr = it.next();
+					//System.out.println("Val:" + attr.getName()+":"+attr.getValue());
+					if(attr.getName().matches(ProcessSpecificCLI.FILTER_METADATA_NAME)){AttNameFound = true;}
+				}
+				if(!AttNameFound){JobSelected = false;}
+			}
+			
+			if(JobSelected && !ProcessSpecificCLI.FILTER_METADATA_VALUE.equals("")){ 
+				boolean AttValFound = false;
+				Iterator<CustomAttribute> it = job.header().customAttributeIterator();
+				while(it.hasNext()){
+					CustomAttribute attr = it.next();
+					//System.out.println("Val:" + attr.getName()+":"+attr.getValue());
+					if(attr.getValue().matches(ProcessSpecificCLI.FILTER_METADATA_VALUE)){AttValFound = true;}
+				}
+				if(!AttValFound){JobSelected = false;}
+			}
+			
+			if(JobSelected && !ProcessSpecificCLI.FILTER_VARIABLE_NAME.equals("")){ 
+				boolean VarNameFound = false;
+				Iterator<String> it = job.values().valueKeyIterator();
+				while(it.hasNext()){
+					String key = it.next();
+					//if(!key.startsWith("&")){key = "&"+key;}
+					//System.out.println("DEBUG K:"+key);
+					if(key.matches(ProcessSpecificCLI.FILTER_VARIABLE_NAME)){VarNameFound = true;}
+				}
+				if(!VarNameFound){JobSelected = false;}
+			}
+			
+			if(JobSelected && !ProcessSpecificCLI.FILTER_VARIABLE_VALUE.equals("")){ 
+				boolean VarValueFound = false;
+				Iterator<String> it = job.values().valueKeyIterator();
+				
+				while(it.hasNext()){
+					String key = it.next();
+					String value = job.values().getValue(key);
+					if(value.matches(ProcessSpecificCLI.FILTER_VARIABLE_VALUE)){VarValueFound = true;}
+				}
+				if(!VarValueFound){JobSelected = false;}
+			}
+			
+			if (JobSelected){
+				FilteredList.add(GlobalList.get(i));
+			}
+		}
+
 		if(ProcessSpecificCLI.SIMULATE){
 			System.out.println("Simulation Mode - Nothing will be updated. List of Jobs Selected:");
 		}
 		
-		if(list.size() == 0){
-			System.out.println(" %% => No Job Was Found for name: "+ProcessSpecificCLI.JOBNAME);
+		if(FilteredList.size() == 0){
+			System.out.println(" %% => No Job Was Found for name: "+ProcessSpecificCLI.FILTER_NAME);
 		}
 		
-		for(int i=0;i<list.size();i++){
+		for(int i=0;i<FilteredList.size();i++){
 			
-			String ObjectName = list.get(i).getName();
+			String ObjectName = FilteredList.get(i).getName();
+			String ObjectTitle = FilteredList.get(i).getTitle();
 			
-			if(ProcessSpecificCLI.SIMULATE){
-				System.out.println("  => Job Found: " + ObjectName);
-			}
-			else{
+		//	if(ProcessSpecificCLI.SIMULATE){
+				//System.out.println("  => Job Found: " + ObjectName +" : " + ObjectTitle);
+		//	}
+		//	else{
 				
 				UC4Object obj = Objbroker.common.openObject(ObjectName, false);
 				if(obj != null){
 					Job job = (Job) obj; 
 					
-					System.out.println(" ++ Updating Job Definition for Job: " + ObjectName);
+					System.out.println("=> Job Found: " + ObjectName +", Updating Definition.");
 
-					
-					if(ProcessSpecificCLI.ADDVARIABLE && !ProcessSpecificCLI.ERRORINVARIABLE){
-						
-						System.out.println("  => Adding Variable: "+ProcessSpecificCLI.VARNAME +" with Value: "+ProcessSpecificCLI.VARVALUE);
-						job.values().addValue(ProcessSpecificCLI.VARNAME, ProcessSpecificCLI.VARVALUE,false);
+					if(ProcessSpecificCLI.U_ACTIVE.equalsIgnoreCase("Y")){job.header().setActive(true);System.out.println("\t ++ UPDATE: Job Set To Active.");}
+					if(ProcessSpecificCLI.U_ACTIVE.equalsIgnoreCase("N")){job.header().setActive(false);System.out.println("\t ++ UPDATE: Job Set To Inactive.");}
+					if(ProcessSpecificCLI.U_GENERATEATRUNTIME.equalsIgnoreCase("Y")){job.attributes().setGenerateAtRuntime(true);System.out.println("\t ++ UPDATE: Job Set To Generate At Runtime.");}
+					if(ProcessSpecificCLI.U_GENERATEATRUNTIME.equalsIgnoreCase("N")){job.attributes().setGenerateAtRuntime(false);System.out.println("\t ++ UPDATE: Generate At Runtime Deactivate.");}
+					if(!ProcessSpecificCLI.U_TITLE.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_TITLE);
+						String newValue = job.header().getTitle().replaceAll(Patterns[0], Patterns[1]);
+						System.out.println("\t ++ UPDATE: Job Title Change from: " + job.header().getTitle() +", to: " + newValue );
+						job.header().setTitle(newValue);
+					}
+					if(!ProcessSpecificCLI.U_ARCH1.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_ARCH1);
+						String newValue = job.header().getArchiveKey1().replaceAll(Patterns[0], Patterns[1]);
+						System.out.println("\t ++ UPDATE: Job Archive Key 1 Change from: " + job.header().getArchiveKey1() +", to: " + newValue );
+						job.header().setArchiveKey1(newValue);
+					}
+					if(!ProcessSpecificCLI.U_ARCH2.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_ARCH2);
+						String newValue = job.header().getArchiveKey1().replaceAll(Patterns[0], Patterns[1]);
+						System.out.println("\t ++ UPDATE: Job Archive Key 2 Change from: " + job.header().getArchiveKey2() +", to: " + newValue );
+						job.header().setArchiveKey1(newValue);
+					}
+					if(!ProcessSpecificCLI.U_ADD_VARIABLE.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_ADD_VARIABLE);
+						String VarName = Patterns[0];
+						String VarValue = Patterns[1];
+						job.values().addValue(VarName, VarValue,false);
+						System.out.println("\t ++ UPDATE: Add Variable, Name: " + VarName +", Value: " + VarValue);
+					}
+					if(!ProcessSpecificCLI.U_UPD_VARIABLE.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_UPD_VARIABLE);
+						String VarName = Patterns[0];
+						String VarValue = Patterns[1];
+						job.values().addValue(VarName, VarValue,true);
+						System.out.println("\t ++ UPDATE: Update Variable, Name: " + VarName +", Value: " + VarValue );
+					}
+					if(!ProcessSpecificCLI.U_DEL_VARIABLE.equals("")){
+						String VarName = ProcessSpecificCLI.U_UPD_VARIABLE;
+						job.values().removeValue(VarName);
+						System.out.println("\t ++ UPDATE: Delete Variable: " + VarName );
+					}
+					if(!ProcessSpecificCLI.U_HOST.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_HOST);
+						String newValue = job.attributes().getHost().toString().replaceAll(Patterns[0], Patterns[1]);
+						UC4HostName ucHost = new UC4HostName(newValue);
+						System.out.println("\t ++ UPDATE: Job Host Change from: " + job.attributes().getHost() +", to: " + newValue );
+						job.attributes().setHost(ucHost);
+					}
+					if(!ProcessSpecificCLI.U_LOGIN.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_LOGIN);
+						String newValue = job.attributes().getLogin().toString().replaceAll(Patterns[0], Patterns[1]);
+						UC4ObjectName ucLogin = new UC4ObjectName(newValue);
+						System.out.println("\t ++ UPDATE: Job Login Change from: " + job.attributes().getLogin() +", to: " + newValue );
+						job.attributes().setLogin(ucLogin);
+					}
+					if(ProcessSpecificCLI.U_MAXNUMBERRUN != -1){
+						System.out.println("\t ++ UPDATE: Job Max Parralel Runs Change from: " +job.attributes().maxParallel().getParallelTasks() +", to: " + ProcessSpecificCLI.U_MAXNUMBERRUN );
+						job.attributes().maxParallel().setParallelTasks(ProcessSpecificCLI.U_MAXNUMBERRUN);
+					}
+					if(ProcessSpecificCLI.U_PRIORITY != -1){
+						System.out.println("\t ++ UPDATE: Job Priority Change from: " + job.attributes().getPriority() +", to: " + ProcessSpecificCLI.U_PRIORITY );
+						job.attributes().setPriority(ProcessSpecificCLI.U_PRIORITY);
+					}
+					if(!ProcessSpecificCLI.U_ADD_MDATA.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_ADD_MDATA);
+						String AttrName = Patterns[0];
+						String AttrValue = Patterns[1];
+						CustomAttribute custAttr = new CustomAttribute(AttrName, AttrValue);
+						job.header().addCustomAttribute(custAttr);
+						System.out.println("\t ++ UPDATE: Add Metadata Tag to Job, Name: " + AttrName +", Value: " + AttrValue );
+					}
+					if(!ProcessSpecificCLI.U_DEL_MDATA.equals("")){
+						String AttName = ProcessSpecificCLI.U_ADD_MDATA;
+						Iterator<CustomAttribute> it = job.header().customAttributeIterator();
+						while (it.hasNext()){
+							CustomAttribute myAtt = it.next();
+							if(myAtt.getName().equalsIgnoreCase(AttName)){
+								System.out.println("\t ++ UPDATE: Delete MEtadata Tag from job, Name: " + AttName );
+								job.header().removeCustomAttribute(myAtt);
+							}
+						}
+					}
+					if(!ProcessSpecificCLI.U_POSTPROCESS.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_POSTPROCESS);
+						String newValue = job.getPostProcess().replaceAll(Patterns[0], Patterns[1]);
+						System.out.println("\t ++ UPDATE: Job PostProcess Update From: \n"
+						+ job.getPostProcess() + "\n"
+						+ "\t ----- To: \n" +
+						newValue +"\n" );
+						job.setPostProcess(newValue);
+					}
+					if(!ProcessSpecificCLI.U_PROCESS.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_PROCESS);
+						String newValue = job.getProcess().replaceAll(Patterns[0], Patterns[1]);
+						System.out.println("\t ++ UPDATE: Job Process Update From: \n"
+						+ job.getProcess() + "\n"
+						+ "\t ----- To: \n" +
+						newValue +"\n" );
+						job.setProcess(newValue);
 					}
 					
-					if(ProcessSpecificCLI.REMOVEVARIABLE && !ProcessSpecificCLI.ERRORINVARIABLE){
-						System.out.println("  => Removing Variable: "+ProcessSpecificCLI.VARNAME);
-						job.values().removeValue(ProcessSpecificCLI.VARNAME);
+					if(!ProcessSpecificCLI.U_PREPROCESS.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_PREPROCESS);
+						String newValue = job.getPreProcess().replaceAll(Patterns[0], Patterns[1]);
+						System.out.println("\t ++ UPDATE: Job PreProcess Update From: \n"
+						+ job.getPreProcess() + "\n"
+						+ "\t ----- To: \n" +
+						newValue +"\n" );
+						job.setPreProcess(newValue);
 					}
-					
-					if(ProcessSpecificCLI.UPDATEVARIABLE && !ProcessSpecificCLI.ERRORINVARIABLE){
-						System.out.println("  => Updating Variable: "+ProcessSpecificCLI.VARNAME +" with Value: "+ProcessSpecificCLI.VARVALUE);
-						job.values().removeValue(ProcessSpecificCLI.VARNAME);
-						
-						job.values().addValue(ProcessSpecificCLI.VARNAME, ProcessSpecificCLI.VARVALUE,true);
+					if(!ProcessSpecificCLI.U_QUEUE.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_QUEUE);
+						String newValue = job.attributes().getQueue().toString().replaceAll(Patterns[0], Patterns[1]);
+						UC4ObjectName ucQueue = new UC4ObjectName(newValue);
+						System.out.println("\t ++ UPDATE: Job Queue Change from: " + job.attributes().getQueue() +", to: " + newValue );
+						job.attributes().setQueue(ucQueue);
 					}
+					if(!ProcessSpecificCLI.U_TZ.equals("")){
+						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_TZ);
+						String newValue = job.attributes().getTimezone().toString().replaceAll(Patterns[0], Patterns[1]);
+						UC4TimezoneName ucTZ = new UC4TimezoneName(newValue);
+						System.out.println("\t ++ UPDATE: Job Timezone Change from: " + job.attributes().getTimezone().toString()+", to: " + newValue );
+						job.attributes().setQueue(ucTZ);
+					}	
 					
-					if(!ProcessSpecificCLI.JOBLOGIN.equals("")){System.out.println("  => Changing Login to: "+ProcessSpecificCLI.JOBLOGIN);job.attributes().setLogin(new UC4ObjectName(ProcessSpecificCLI.JOBLOGIN));}
-					if(!ProcessSpecificCLI.JOBHOST.equals("")){System.out.println("  => Changing Host to: "+ProcessSpecificCLI.JOBHOST);job.attributes().setHost(new UC4HostName(ProcessSpecificCLI.JOBHOST));}
-					if(!ProcessSpecificCLI.JOBPROCESS.equals("")){System.out.println("  => Changing Process");job.setProcess(ProcessSpecificCLI.JOBPROCESS);}
-					if(!ProcessSpecificCLI.JOBPREPROCESS.equals("")){System.out.println("  => Changing Pre-Process");job.setPreProcess(ProcessSpecificCLI.JOBPREPROCESS);}
-					if(!ProcessSpecificCLI.JOBPOSTPROCESS.equals("")){System.out.println("  => Changing Post-Process");job.setPostProcess(ProcessSpecificCLI.JOBPOSTPROCESS);}
-					if(!ProcessSpecificCLI.JOBTITLE.equals("")){System.out.println("  => Changing Title to: "+ProcessSpecificCLI.JOBTITLE);job.header().setTitle(ProcessSpecificCLI.JOBTITLE);}
-					if(!ProcessSpecificCLI.JOBQUEUE.equals("")){System.out.println("  => Changing Queue to: "+ProcessSpecificCLI.JOBQUEUE);job.attributes().setQueue(new UC4ObjectName(ProcessSpecificCLI.JOBQUEUE));}
-					if(!ProcessSpecificCLI.JOBTZ.equals("")){System.out.println("  => Changing Timezone to: "+ProcessSpecificCLI.JOBTZ);job.attributes().setTimezone(new UC4TimezoneName(ProcessSpecificCLI.JOBTZ));}
-					if(ProcessSpecificCLI.JOBPRIORITY != 0){System.out.println("  => Changing Priority to: "+ProcessSpecificCLI.JOBPRIORITY);job.attributes().setPriority(ProcessSpecificCLI.JOBPRIORITY);}
-					if(ProcessSpecificCLI.JOBGENERATEATRUNTIME){System.out.println("  => Changing Generate At Runtime");job.attributes().setGenerateAtRuntime(true);}
-					if(ProcessSpecificCLI.JOBACTIVE){System.out.println("  => Activate Job");job.header().setActive(true);}
-					if(ProcessSpecificCLI.JOBINACTIVE){System.out.println("  => Deactivate Job");job.header().setActive(false);}
-					
-					System.out.println("");
-					Objbroker.common.saveAndCloseObject(job);
-				}else{
-					System.out.println("\n -- Error: Could Not Open Object " + ObjectName);
-					System.out.println(" -- Hint: Object may already be open by another user / session.");
-				}
+	
+					if(!ProcessSpecificCLI.SIMULATE){
+						System.out.println(" %% Commiting all Updates Now for Job: " + job.getName());
+						Objbroker.common.saveAndCloseObject(job);
+					}
+					//System.out.println("");
+				//}else{
+				//	System.out.println("\n -- Error: Could Not Open Object " + ObjectName);
+				//	System.out.println(" -- Hint: Object may already be open by another user / session.");
+				//}
+				//}
 			}
-				}
+		}
+	}
+	public static String[] getUpdatePattern(String s){
+		String[] RawVals = s.split(","); // splits ["old.name","new.name"] right in the middle
+		String[] Patterns = new String[2];
+		String OldName = RawVals[0].substring(1);
+		String NewName = RawVals[1].replace("]","");
+		Patterns[0] = OldName;
+		Patterns[1] = NewName;
+		//System.out.println("Pattern old:" + Patterns[0]);
+		//System.out.println("Pattern new:" + Patterns[1]);
+		return Patterns;
+		
+		
 	}
 }

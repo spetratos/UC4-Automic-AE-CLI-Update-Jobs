@@ -18,6 +18,7 @@ public class ProcessSpecificCLI {
 		public static String FILTER_QUEUE = "";
 		public static String FILTER_TITLE = "";
 		public static String FILTER_ACTIVE = "";
+		public static String FILTER_INACTIVE = "";
 		public static String FILTER_ARCHIVE1 = "";
 		public static String FILTER_ARCHIVE2 = "";
 		public static String FILTER_VARIABLE_NAME = "";
@@ -39,6 +40,7 @@ public class ProcessSpecificCLI {
 		public static String U_GENERATEATRUNTIME = ""; 			// "Y" or "N"
 		public static int U_MAXNUMBERRUN = -1; 					// "123"
 		public static String U_ACTIVE = "";  					// "Y" or "N"
+		public static String U_INACTIVE = "";  					// "Y" or "N"
 		public static String U_PREPROCESS = ""; 				//["DEF","GENERAL"] or [".*","LOGIN.GENERAL"]
 		public static String U_POSTPROCESS = ""; 				//["DEF","GENERAL"] or [".*","LOGIN.GENERAL"]
 		public static String U_ADD_VARIABLE = ""; 				//["&TEST#","1234"]
@@ -61,47 +63,44 @@ public class ProcessSpecificCLI {
 
 		// 1- add your options below this line
 		options.addOption( "f_name", true, "[MANDATORY] Job Name To Update (can use '*' or '?')" );
-		options.addOption( "f_host", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_login", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_queue", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_title", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_active", false, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_inactive", false, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_arch1", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_arch2", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_varname", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_varvalue", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_mdataname", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_mdatavalue", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_process", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_preprocess", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
-		options.addOption( "f_postprocess", true, "[OPTIONAL] Only Update Jobs using this HOST (can use '*' or '?')" );
+		options.addOption( "f_host", true, "[OPTIONAL] Filter by HOST (can use RegEx)" );
+		options.addOption( "f_login", true, "[OPTIONAL] Filter by LOGIN (can use RegEx)" );
+		options.addOption( "f_queue", true, "[OPTIONAL] Filter by QUEUE (can use RegEx)" );
+		options.addOption( "f_title", true, "[OPTIONAL] Filter by TITLE (can use RegEx)" );
+		options.addOption( "f_active", false, "[OPTIONAL] Filter Active or Inactive Jobs only, value is: \"Y\" or \"N\"" );
+		options.addOption( "f_arch1", true, "[OPTIONAL] Filter by Archive key 1 (can use RegEx)" );
+		options.addOption( "f_arch2", true, "[OPTIONAL] Filter by Archive Key 2 (can use RegEx)" );
+		options.addOption( "f_varname", true, "[OPTIONAL] Filter by Variable Name (can use RegEx)" );
+		options.addOption( "f_varvalue", true, "[OPTIONAL] Filter by Variable Value (can use RegEx)" + "\n" );
+		options.addOption( "f_mdataname", true, "[OPTIONAL] Filter by Metadata Name (can use RegEx)" );
+		options.addOption( "f_mdatavalue", true, "[OPTIONAL] Filter by Metadata Value (can use RegEx)" );
+		options.addOption( "f_process", true, "[OPTIONAL] Filter by keyword in Process (can use RegEx)" );
+		options.addOption( "f_preprocess", true, "[OPTIONAL] Filter by keyword in PreProcess (can use RegEx)" );
+		options.addOption( "f_postprocess", true, "[OPTIONAL] Filter by keyword in PostProcess (can use RegEx)");
 		
-		//options.addOption( "template", "template", true, "[MANDATORY] Template for Job [JOBS.WIN, JOBS.UNX, etc.]");
-		//options.addOption( "folder", "folder", true, "[MANDATORY] Existing folder where Job is to be created");
-		options.addOption( "u_login", true, "[OPTIONAL] Format: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]- Change LOGIN to this value in selected Jobs (can use '*' or '?')" );
-		options.addOption( "u_host", true, "[OPTIONAL] Format: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]- Change LOGIN to this value in selected Jobs (can use '*' or '?')");
-		options.addOption( "u_process", true, "[OPTIONAL] Format: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]- Change LOGIN to this value in selected Jobs (can use '*' or '?')");
-		options.addOption( "u_title", true, "[OPTIONAL] Format: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]- Change LOGIN to this value in selected Jobs (can use '*' or '?')");
-		options.addOption( "u_queue", true, "[OPTIONAL] Format: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]- Change LOGIN to this value in selected Jobs (can use '*' or '?')");
-		options.addOption( "u_timezone", true, "[OPTIONAL] Format: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]- Change LOGIN to this value in selected Jobs (can use '*' or '?')");
-		options.addOption( "u_addvar", true, "[OPTIONAL] Format: [\"VAR.NAME\",\"VAR.VALUE\"] or [\"OLD*\",\"NEW\"]- Change LOGIN to this value in selected Jobs (can use '*' or '?')");
-		options.addOption( "u_updvar", true, "[OPTIONAL] Format: [\"VAR.NAME\",\"VAR.VALUE\"] or [\"OLD*\",\"NEW\"]- Change LOGIN to this value in selected Jobs (can use '*' or '?')");
-		options.addOption( "u_delvar", true, "[OPTIONAL] Format: \"VAR.NAME\" - Delete Variable from Selected Jobs");
-		options.addOption( "u_priority", true, "[OPTIONAL] Priority for Job");
-		options.addOption( "u_genatruntime", true, "[OPTIONAL] Possible Values: \"Y\" or \"N\" - Generate at Runtime");
-		options.addOption( "u_active", true, "[OPTIONAL]  Possible Values: \"Y\" or \"N\" - Activate or Deactivate Job");
-		options.addOption( "u_preprocess", true, "[OPTIONAL] Pre-Process for Job");
-		options.addOption( "u_postprocess", true, "[OPTIONAL] Post-Process for Job");
-		options.addOption( "u_maxruns", true, "[OPTIONAL] Post-Process for Job");
-		options.addOption( "u_arch1", true, "[OPTIONAL] Post-Process for Job");
-		options.addOption( "u_arch2", true, "[OPTIONAL] Post-Process for Job");
-		options.addOption( "u_addmdata", true, "[OPTIONAL] Format: [\"VAR.NAME\",\"VAR.VALUE\"] or [\"OLD*\",\"NEW\"]- Change LOGIN to this value in selected Jobs (can use '*' or '?')");
+		options.addOption( "u_login", true, "[OPTIONAL] Update LOGIN value. Format: [\"OLDNAME\",\"NEWNAME\"] or [\"OLD*\",\"NEW\"] - RegEx Supported" );
+		options.addOption( "u_host", true, "[OPTIONAL] Update HOST value. Format: [\"OLDNAME\",\"NEWNAME\"] or [\"OLD*\",\"NEW\"] - RegEx Supported");
+		options.addOption( "u_process", true, "[OPTIONAL] Update PROCESS. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] or [\"OLD*\",\"NEW\"] - RegEx Supported");
+		options.addOption( "u_title", true, "[OPTIONAL] Update TITLE value. Format: [\"OLDNAME\",\"NEWNAME\"] or [\"OLD*\",\"NEW\"] - RegEx Supported");
+		options.addOption( "u_queue", true, "[OPTIONAL] Update QUEUE value. Format: [\"OLDNAME\",\"NEWNAME\"] or [\"OLD*\",\"NEW\"] - RegEx Supported");
+		options.addOption( "u_timezone", true, "[OPTIONAL] Update TIMEZONE value. Format: [\"OLDNAME\",\"NEWNAME\"] or [\"OLD*\",\"NEW\"] - RegEx Supported" + "\n" );
+		options.addOption( "u_addvar", true, "[OPTIONAL] Add Variable to Job. Format: [\"&VARNAME\",\"VARVALUE\"] - RegEx NOT Supported");
+		options.addOption( "u_updvar", true, "[OPTIONAL] Update Variable in Job. Format: [\"&VARNAME\",\"VARVALUE\"] - RegEx NOT Supported");
+		options.addOption( "u_delvar", true, "[OPTIONAL] Delete Variable from Job. Format: \"&VARNAME\" - RegEx NOT Supported");
+		options.addOption( "u_priority", true, "[OPTIONAL] Update PRIORITY value. Format: Integer between 0 and 255");
+		options.addOption( "u_genatruntime", true, "[OPTIONAL] Update Generate At Runtime. Possible Values: \"Y\" or \"N\"");
+		options.addOption( "u_active", true, "[OPTIONAL] Activate or Deactivate job. Possible Values: \"Y\" or \"N\"");
+		options.addOption( "u_preprocess", true, "[OPTIONAL] Update PREPROCESS. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] or [\"OLD*\",\"NEW\"] - RegEx Supported");
+		options.addOption( "u_postprocess", true, "[OPTIONAL] Update POSTPROCESS. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] or [\"OLD*\",\"NEW\"] - RegEx Supported");
+		options.addOption( "u_maxruns", true, "[OPTIONAL] Update Max Parallel Runs value. Format: Integer");
+		options.addOption( "u_arch1", true, "[OPTIONAL] Update Archive Key 1. Format: [\"OLDNAME\",\"NEWNAME\"] or [\"OLD*\",\"NEW\"] - RegEx Supported");
+		options.addOption( "u_arch2", true, "[OPTIONAL] Update Archive Key 2. Format: [\"OLDNAME\",\"NEWNAME\"] or [\"OLD*\",\"NEW\"] - RegEx Supported");
+		options.addOption( "u_addmdata", true, "[OPTIONAL] Add Metadata Tag. Format: [\"TAGNAME\",\"TAGVALUE\"] - RegEx NOT Supported");
 		//options.addOption( "u_updmdata", true, "[OPTIONAL] Format: [\"VAR.NAME\",\"VAR.VALUE\"] or [\"OLD*\",\"NEW\"]- Change LOGIN to this value in selected Jobs (can use '*' or '?')");
-		options.addOption( "u_delmdata", true, "[OPTIONAL] Format: \"VAR.NAME\" - Delete Variable from Selected Jobs");
+		options.addOption( "u_delmdata", true, "[OPTIONAL] Delete existing Metadata Tag. Format: \"&METADATATAGNAME\" - RegEx NOT Supported");
 		
-		options.addOption( "simulate", false, "[OPTIONAL] Simulate Update (does not update anything)" );
-
+		options.addOption( "simulate", false, "[OPTIONAL] Simulate Update (does not update anything)"  + "\n" );
+		//options.addOption( "simulatelist", false, "[OPTIONAL] Simulate Update (does not update anything)" );
 		
 		//options.addOption( "varadd", false, "[OPTIONAL] Add Variable and Value to Job \n"
 		//		+ "	  => Requires -variable option (represents Variable name)\n"
@@ -182,7 +181,7 @@ public class ProcessSpecificCLI {
 	    	System.out.println("Program: "+Version.getName() + " - " +Version.getDescription());
 	    	System.out.println("Version: "+Version.getVersion()+"\n");
 	    	HelpFormatter formatter = new HelpFormatter();
-	    	formatter.printHelp(100,"java -jar Command.jar","\n++ Parameters Are: \n\n", options,"", true );
+	    	formatter.printHelp(300,"java -jar Command.jar","\n++ Parameters Are: \n\n", options,"", true );
 	    	System.exit(0);
 	    }
 	    
@@ -196,8 +195,12 @@ public class ProcessSpecificCLI {
 	public static boolean checkValueStructure(String s){
 		if(!s.startsWith("[")){return false;}
 		if(!s.endsWith("]")){return false;}
-		String content = s.substring(1, s.length()-1);
-		//System.out.println("DEBUG:"+content);
+		if(!s.contains(",")){return false;}
+		String[] RawVals = s.split(","); // splits ["old.name","new.name"] right in the middle
+		if(RawVals.length != 2){return false;}
+		if(RawVals[0].isEmpty()){return false;}
+		if(RawVals[1].isEmpty()){return false;}
+		
 		return true;
 	}
 	

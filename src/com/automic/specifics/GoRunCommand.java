@@ -112,7 +112,7 @@ public class GoRunCommand {
 		}
 
 		if(ProcessSpecificCLI.SIMULATE){
-			System.out.println("Simulation Mode - Nothing will be updated. List of Jobs Selected:");
+			System.out.println("%% => Simulation Mode - Nothing will be updated. <= %% \n");
 		}
 		
 		if(FilteredList.size() == 0){
@@ -133,7 +133,7 @@ public class GoRunCommand {
 				if(obj != null){
 					Job job = (Job) obj; 
 					
-					System.out.println("=> Job Found: " + ObjectName +", Updating Definition.");
+					System.out.println("=> Job Found: " + ObjectName +" : " + ObjectTitle);
 
 					if(ProcessSpecificCLI.U_ACTIVE.equalsIgnoreCase("Y")){job.header().setActive(true);System.out.println("\t ++ UPDATE: Job Set To Active.");}
 					if(ProcessSpecificCLI.U_ACTIVE.equalsIgnoreCase("N")){job.header().setActive(false);System.out.println("\t ++ UPDATE: Job Set To Inactive.");}
@@ -142,19 +142,19 @@ public class GoRunCommand {
 					if(!ProcessSpecificCLI.U_TITLE.equals("")){
 						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_TITLE);
 						String newValue = job.header().getTitle().replaceAll(Patterns[0], Patterns[1]);
-						System.out.println("\t ++ UPDATE: Job Title Change from: " + job.header().getTitle() +", to: " + newValue );
+						System.out.println("\t ++ UPDATE: Job Title Change from: " + job.header().getTitle() +" To: " + newValue );
 						job.header().setTitle(newValue);
 					}
 					if(!ProcessSpecificCLI.U_ARCH1.equals("")){
 						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_ARCH1);
 						String newValue = job.header().getArchiveKey1().replaceAll(Patterns[0], Patterns[1]);
-						System.out.println("\t ++ UPDATE: Job Archive Key 1 Change from: " + job.header().getArchiveKey1() +", to: " + newValue );
+						System.out.println("\t ++ UPDATE: Job Archive Key 1 Change from: " + job.header().getArchiveKey1() +" To: " + newValue );
 						job.header().setArchiveKey1(newValue);
 					}
 					if(!ProcessSpecificCLI.U_ARCH2.equals("")){
 						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_ARCH2);
 						String newValue = job.header().getArchiveKey1().replaceAll(Patterns[0], Patterns[1]);
-						System.out.println("\t ++ UPDATE: Job Archive Key 2 Change from: " + job.header().getArchiveKey2() +", to: " + newValue );
+						System.out.println("\t ++ UPDATE: Job Archive Key 2 Change from: " + job.header().getArchiveKey2() +" To: " + newValue );
 						job.header().setArchiveKey1(newValue);
 					}
 					if(!ProcessSpecificCLI.U_ADD_VARIABLE.equals("")){
@@ -180,22 +180,22 @@ public class GoRunCommand {
 						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_HOST);
 						String newValue = job.attributes().getHost().toString().replaceAll(Patterns[0], Patterns[1]);
 						UC4HostName ucHost = new UC4HostName(newValue);
-						System.out.println("\t ++ UPDATE: Job Host Change from: " + job.attributes().getHost() +", to: " + newValue );
+						System.out.println("\t ++ UPDATE: Job Host Change from: " + job.attributes().getHost() +" To: " + newValue );
 						job.attributes().setHost(ucHost);
 					}
 					if(!ProcessSpecificCLI.U_LOGIN.equals("")){
 						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_LOGIN);
 						String newValue = job.attributes().getLogin().toString().replaceAll(Patterns[0], Patterns[1]);
 						UC4ObjectName ucLogin = new UC4ObjectName(newValue);
-						System.out.println("\t ++ UPDATE: Job Login Change from: " + job.attributes().getLogin() +", to: " + newValue );
+						System.out.println("\t ++ UPDATE: Job Login Change from: " + job.attributes().getLogin() +" To: " + newValue );
 						job.attributes().setLogin(ucLogin);
 					}
 					if(ProcessSpecificCLI.U_MAXNUMBERRUN != -1){
-						System.out.println("\t ++ UPDATE: Job Max Parralel Runs Change from: " +job.attributes().maxParallel().getParallelTasks() +", to: " + ProcessSpecificCLI.U_MAXNUMBERRUN );
+						System.out.println("\t ++ UPDATE: Job Max Parralel Runs Change from: " +job.attributes().maxParallel().getParallelTasks() +" To: " + ProcessSpecificCLI.U_MAXNUMBERRUN );
 						job.attributes().maxParallel().setParallelTasks(ProcessSpecificCLI.U_MAXNUMBERRUN);
 					}
 					if(ProcessSpecificCLI.U_PRIORITY != -1){
-						System.out.println("\t ++ UPDATE: Job Priority Change from: " + job.attributes().getPriority() +", to: " + ProcessSpecificCLI.U_PRIORITY );
+						System.out.println("\t ++ UPDATE: Job Priority Change from: " + job.attributes().getPriority() +" To: " + ProcessSpecificCLI.U_PRIORITY );
 						job.attributes().setPriority(ProcessSpecificCLI.U_PRIORITY);
 					}
 					if(!ProcessSpecificCLI.U_ADD_MDATA.equals("")){
@@ -204,7 +204,7 @@ public class GoRunCommand {
 						String AttrValue = Patterns[1];
 						CustomAttribute custAttr = new CustomAttribute(AttrName, AttrValue);
 						job.header().addCustomAttribute(custAttr);
-						System.out.println("\t ++ UPDATE: Add Metadata Tag to Job, Name: " + AttrName +", Value: " + AttrValue );
+						System.out.println("\t ++ UPDATE: Add Metadata Tag to Job, Name: " + AttrName +" Value: " + AttrValue );
 					}
 					if(!ProcessSpecificCLI.U_DEL_MDATA.equals("")){
 						String AttName = ProcessSpecificCLI.U_ADD_MDATA;
@@ -249,18 +249,18 @@ public class GoRunCommand {
 						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_QUEUE);
 						String newValue = job.attributes().getQueue().toString().replaceAll(Patterns[0], Patterns[1]);
 						UC4ObjectName ucQueue = new UC4ObjectName(newValue);
-						System.out.println("\t ++ UPDATE: Job Queue Change from: " + job.attributes().getQueue() +", to: " + newValue );
+						System.out.println("\t ++ UPDATE: Job Queue Change from: " + job.attributes().getQueue() +" To: " + newValue );
 						job.attributes().setQueue(ucQueue);
 					}
 					if(!ProcessSpecificCLI.U_TZ.equals("")){
 						String[] Patterns = getUpdatePattern(ProcessSpecificCLI.U_TZ);
 						String newValue = job.attributes().getTimezone().toString().replaceAll(Patterns[0], Patterns[1]);
 						UC4TimezoneName ucTZ = new UC4TimezoneName(newValue);
-						System.out.println("\t ++ UPDATE: Job Timezone Change from: " + job.attributes().getTimezone().toString()+", to: " + newValue );
+						System.out.println("\t ++ UPDATE: Job Timezone Change from: " + job.attributes().getTimezone().toString()+" To: " + newValue );
 						job.attributes().setQueue(ucTZ);
 					}	
 					
-	
+					System.out.println("");
 					if(!ProcessSpecificCLI.SIMULATE){
 						System.out.println(" %% Commiting all Updates Now for Job: " + job.getName());
 						Objbroker.common.saveAndCloseObject(job);

@@ -42,7 +42,7 @@ public class GoRunCommand {
 		ObjectBroker Objbroker = new ObjectBroker(ClientConnection,false);
 	
 		//2- retrieve your parameters.. and do what you want.
-		List<SearchResultItem> GlobalList = Objbroker.common.searchJobs(ProcessSpecificCLI.FILTER_NAME);
+		List<SearchResultItem> GlobalList = Objbroker.common.searchJobs(ProcessSpecificCLI.NAME);
 		List<SearchResultItem> FilteredList = new ArrayList<SearchResultItem>();
 		for(int i=0;i< GlobalList.size();i++){
 			Job job = (Job) Objbroker.common.openObject(GlobalList.get(i).getName(), true);
@@ -50,6 +50,7 @@ public class GoRunCommand {
 			boolean JobSelected = true;
 			if(JobSelected && ProcessSpecificCLI.FILTER_ACTIVE.equals("Y")){ if(!job.header().isActive()) {JobSelected = false;}}
 			if(JobSelected && ProcessSpecificCLI.FILTER_ACTIVE.equals("N")){  if(job.header().isActive()) {JobSelected = false;}}
+			if(JobSelected && !ProcessSpecificCLI.FILTER_NAME.equals("")){  if(!job.getName().matches(ProcessSpecificCLI.FILTER_NAME)) {JobSelected = false;}}
 			if(JobSelected && !ProcessSpecificCLI.FILTER_ARCHIVE1.equals("")){  if(!job.header().getArchiveKey1().matches(ProcessSpecificCLI.FILTER_ARCHIVE1)) {JobSelected = false;}}
 			if(JobSelected && !ProcessSpecificCLI.FILTER_ARCHIVE2.equals("")){ if(!job.header().getArchiveKey2().matches(ProcessSpecificCLI.FILTER_ARCHIVE2)) {JobSelected = false;}}
 			if(JobSelected && !ProcessSpecificCLI.FILTER_TITLE.equals("")){ if(!job.header().getTitle().matches(ProcessSpecificCLI.FILTER_TITLE)) {JobSelected = false;}}

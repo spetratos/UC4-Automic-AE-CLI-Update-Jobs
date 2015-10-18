@@ -12,6 +12,7 @@ import com.automic.std.ExtendedParser;
 public class ProcessSpecificCLI {
 
 	// Items For Selection
+		public static String NAME = "";
 		public static String FILTER_NAME = "";
 		public static String FILTER_HOST = "";
 		public static String FILTER_LOGIN = "";
@@ -63,7 +64,8 @@ public class ProcessSpecificCLI {
 		Options options = new Options();
 
 		// 1- add your options below this line
-		options.addOption( "f_name", true, "[MANDATORY] Job Name To Update (can use '*' or '?')" );
+		options.addOption( "name", true, "[MANDATORY] Job Name To Update (can use '*' or '?')" );
+		options.addOption( "f_name", true, "[OPTIONAL] Filter by Job Name (can use RegEx)" );
 		options.addOption( "f_host", true, "[OPTIONAL] Filter by HOST (can use RegEx)" );
 		options.addOption( "f_login", true, "[OPTIONAL] Filter by LOGIN (can use RegEx)" );
 		options.addOption( "f_queue", true, "[OPTIONAL] Filter by QUEUE (can use RegEx)" );
@@ -115,6 +117,7 @@ public class ProcessSpecificCLI {
 		// 2- retrieve the value of required parameters
 	 
 		// processing filter parameters
+		if( line.hasOption( "name" )) {NAME = line.getOptionValue("name");}
 		if( line.hasOption( "f_name" )) {FILTER_NAME = line.getOptionValue("f_name");}
 		if( line.hasOption( "f_host" )) {FILTER_HOST = line.getOptionValue("f_host");}
 		if( line.hasOption( "f_login" )) {FILTER_LOGIN = line.getOptionValue("f_login");}
@@ -168,7 +171,7 @@ public class ProcessSpecificCLI {
 		
 	    if( line.hasOption( "commit" )) {SIMULATE = false;}
 
-	    if(FILTER_NAME.equals("")){System.out.println(" -- Error: Missing Mandatory Parameter: f_name [name filer for jobs]. Use -h for help.");ERROR_FREE=false;}
+	    if(NAME.equals("")){System.out.println(" -- Error: Missing Mandatory Parameter: -name. Use -h for help.");ERROR_FREE=false;}
 
 	    // We need to add a & in front of the variable name if it isnt provided..
 	  //  VARNAME = VARNAME.toUpperCase();

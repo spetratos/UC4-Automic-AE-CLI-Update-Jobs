@@ -128,7 +128,7 @@ public class GoRunCommand {
 				//System.out.println("  => Job Found: " + ObjectName +" : " + ObjectTitle);
 		//	}
 		//	else{
-				
+			
 				UC4Object obj = Objbroker.common.openObject(ObjectName, false);
 				if(obj != null){
 					Job job = (Job) obj; 

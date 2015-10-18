@@ -53,7 +53,8 @@ public class ProcessSpecificCLI {
 		public static String U_DEL_MDATA = ""; 					//"GEOGRAPHY"
 
 	// Other things
-		public static boolean SIMULATE = false;
+		public static boolean SIMULATE = true;
+		public static boolean COMMIT = false;
 	
 		
 	public static void processSpecificParameters(String[] args) throws ParseException {
@@ -99,7 +100,7 @@ public class ProcessSpecificCLI {
 		//options.addOption( "u_updmdata", true, "[OPTIONAL] Format: [\"VAR.NAME\",\"VAR.VALUE\"] or [\"OLD*\",\"NEW\"]- Change LOGIN to this value in selected Jobs (can use '*' or '?')");
 		options.addOption( "u_delmdata", true, "[OPTIONAL] Delete existing Metadata Tag. Format: \"&METADATATAGNAME\" - RegEx NOT Supported");
 		
-		options.addOption( "simulate", false, "[OPTIONAL] Simulate Update (does not update anything)"  + "\n" );
+		options.addOption( "commit", false, "[OPTIONAL] Commit Update (By Default, only a simulation is ran)"  + "\n" );
 		//options.addOption( "simulatelist", false, "[OPTIONAL] Simulate Update (does not update anything)" );
 		
 		//options.addOption( "varadd", false, "[OPTIONAL] Add Variable and Value to Job \n"
@@ -165,7 +166,7 @@ public class ProcessSpecificCLI {
 		//if( line.hasOption( "u_updmdata" )) {if(checkValueStructure(line.getOptionValue("u_updmdata"))){U_UPD_MDATA = line.getOptionValue("u_updmdata");}else{System.out.println(" -- Error in Value for u_updmdata. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
 		if( line.hasOption( "u_delmdata" )) {if(checkValueStructure(line.getOptionValue("u_delmdata"))){U_DEL_MDATA = line.getOptionValue("u_delmdata");}else{System.out.println(" -- Error in Value for u_delmdata. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}	
 		
-	    if( line.hasOption( "simulate" )) {SIMULATE = true;}
+	    if( line.hasOption( "commit" )) {SIMULATE = false;}
 
 	    if(FILTER_NAME.equals("")){System.out.println(" -- Error: Missing Mandatory Parameter: f_name [name filer for jobs]. Use -h for help.");ERROR_FREE=false;}
 

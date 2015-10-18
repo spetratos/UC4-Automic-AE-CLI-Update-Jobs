@@ -112,7 +112,7 @@ public class GoRunCommand {
 		}
 
 		if(ProcessSpecificCLI.SIMULATE){
-			System.out.println("%% => Simulation Mode - Nothing will be updated. <= %% \n");
+			System.out.println("%% => Simulation Mode - Nothing will be updated. [ Hint: Run commit option to update objects (-commit) ] <= %% \n");
 		}
 		
 		if(FilteredList.size() == 0){

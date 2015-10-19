@@ -261,7 +261,7 @@ public class GoRunCommand {
 						job.attributes().setQueue(ucTZ);
 					}	
 					
-					System.out.println("");
+					//System.out.println("");
 					if(!ProcessSpecificCLI.SIMULATE){
 						System.out.println(" %% Commiting all Updates Now for Job: " + job.getName());
 						Objbroker.common.saveAndCloseObject(job);

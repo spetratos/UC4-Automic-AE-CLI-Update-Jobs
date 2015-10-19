@@ -64,7 +64,7 @@ public class ProcessSpecificCLI {
 		Options options = new Options();
 
 		// 1- add your options below this line
-		options.addOption( "name", true, "[MANDATORY] Job Name To Update (can use '*' or '?')" );
+		options.addOption( "name", true, "[MANDATORY] Job Name To Update (can use '*' or '?')\n" );
 		options.addOption( "f_name", true, "[OPTIONAL] Filter by Job Name (can use RegEx)" );
 		options.addOption( "f_host", true, "[OPTIONAL] Filter by HOST (can use RegEx)" );
 		options.addOption( "f_login", true, "[OPTIONAL] Filter by LOGIN (can use RegEx)" );
@@ -86,9 +86,9 @@ public class ProcessSpecificCLI {
 		options.addOption( "u_process", true, "[OPTIONAL] Update PROCESS. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] or [\"OLD*\",\"NEW\"] - RegEx Supported");
 		options.addOption( "u_title", true, "[OPTIONAL] Update TITLE value. Format: [\"OLDNAME\",\"NEWNAME\"] or [\"OLD*\",\"NEW\"] - RegEx Supported");
 		options.addOption( "u_queue", true, "[OPTIONAL] Update QUEUE value. Format: [\"OLDNAME\",\"NEWNAME\"] or [\"OLD*\",\"NEW\"] - RegEx Supported");
-		options.addOption( "u_timezone", true, "[OPTIONAL] Update TIMEZONE value. Format: [\"OLDNAME\",\"NEWNAME\"] or [\"OLD*\",\"NEW\"] - RegEx Supported" + "\n" );
+		options.addOption( "u_timezone", true, "[OPTIONAL] Update TIMEZONE value. Format: [\"OLDNAME\",\"NEWNAME\"] or [\"OLD*\",\"NEW\"] - RegEx Supported" );
 		options.addOption( "u_addvar", true, "[OPTIONAL] Add Variable to Job. Format: [\"&VARNAME\",\"VARVALUE\"] - RegEx NOT Supported");
-		options.addOption( "u_updvar", true, "[OPTIONAL] Update Variable in Job. Format: [\"&VARNAME\",\"VARVALUE\"] - RegEx NOT Supported");
+		options.addOption( "u_updvar", true, "[OPTIONAL] Update Variable in Job. Format: [\"&VARNAME\",\"VARVALUE\"] - RegEx NOT Supported\n");
 		options.addOption( "u_delvar", true, "[OPTIONAL] Delete Variable from Job. Format: \"&VARNAME\" - RegEx NOT Supported");
 		options.addOption( "u_priority", true, "[OPTIONAL] Update PRIORITY value. Format: Integer between 0 and 255");
 		options.addOption( "u_genatruntime", true, "[OPTIONAL] Update Generate At Runtime. Possible Values: \"Y\" or \"N\"");
@@ -109,7 +109,7 @@ public class ProcessSpecificCLI {
 		//		+ "	  => Requires -variable option (represents Variable name)\n"
 		//		+ "	  => Requires -value option (represents Variable value)\n");
 	
-		options.addOption( "h", "help", false, "display help");
+		options.addOption( "h", "help", false, "display help\n");
 		
 		// parse the command line arguments
 		CommandLine line = parser.parse( options, args );

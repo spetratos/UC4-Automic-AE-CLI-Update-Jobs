@@ -55,10 +55,11 @@ public class GoRunCommand {
 			if(JobSelected && !ProcessSpecificCLI.FILTER_ARCHIVE2.equals("")){ if(!job.header().getArchiveKey2().matches(ProcessSpecificCLI.FILTER_ARCHIVE2)) {JobSelected = false;}}
 			if(JobSelected && !ProcessSpecificCLI.FILTER_TITLE.equals("")){ if(!job.header().getTitle().matches(ProcessSpecificCLI.FILTER_TITLE)) {JobSelected = false;}}
 			if(JobSelected && !ProcessSpecificCLI.FILTER_HOST.equals("")){ if(!job.attributes().getHost().toString().matches(ProcessSpecificCLI.FILTER_HOST)) {JobSelected = false;}}
-			if(JobSelected && !ProcessSpecificCLI.FILTER_LOGIN.equals("")){ if(!job.attributes().getLogin().toString().matches(ProcessSpecificCLI.FILTER_LOGIN)) {JobSelected = false;}}		
-			if(JobSelected && !ProcessSpecificCLI.FILTER_POSTPROCESS_KEYWORD.equals("")){ if(!job.getProcess().matches(ProcessSpecificCLI.FILTER_POSTPROCESS_KEYWORD)) {JobSelected = false;}}
-			if(JobSelected && !ProcessSpecificCLI.FILTER_PREPROCESS_KEYWORD.equals("")){ if(!job.getPreProcess().matches(ProcessSpecificCLI.FILTER_PREPROCESS_KEYWORD)) {JobSelected = false;}}
-			if(JobSelected && !ProcessSpecificCLI.FILTER_PROCESS_KEYWORD.equals("")){ if(!job.getPostProcess().matches(ProcessSpecificCLI.FILTER_PROCESS_KEYWORD)) {JobSelected = false;}}
+			if(JobSelected && !ProcessSpecificCLI.FILTER_LOGIN.equals("")){ if(!job.attributes().getLogin().toString().matches(ProcessSpecificCLI.FILTER_LOGIN)) {JobSelected = false;}}
+			// in the following line (?s) allows matching new lines.. which is essential when matching Process to a regex!!
+			if(JobSelected && !ProcessSpecificCLI.FILTER_POSTPROCESS_KEYWORD.equals("")){ if(!job.getPostProcess().matches("(?s)"+ProcessSpecificCLI.FILTER_POSTPROCESS_KEYWORD)) {JobSelected = false;}}
+			if(JobSelected && !ProcessSpecificCLI.FILTER_PREPROCESS_KEYWORD.equals("")){ if(!job.getPreProcess().matches("(?s)"+ProcessSpecificCLI.FILTER_PREPROCESS_KEYWORD)) {JobSelected = false;}}
+			if(JobSelected && !ProcessSpecificCLI.FILTER_PROCESS_KEYWORD.equals("")){ if(!job.getProcess().matches("(?s)"+ProcessSpecificCLI.FILTER_PROCESS_KEYWORD)) {JobSelected = false;}}
 			if(JobSelected && !ProcessSpecificCLI.FILTER_QUEUE.equals("")){ if(!job.attributes().getQueue().toString().matches(ProcessSpecificCLI.FILTER_QUEUE)) {JobSelected = false;}}
 			
 			if(JobSelected && !ProcessSpecificCLI.FILTER_METADATA_NAME.equals("")){ 
@@ -88,8 +89,6 @@ public class GoRunCommand {
 				Iterator<String> it = job.values().valueKeyIterator();
 				while(it.hasNext()){
 					String key = it.next();
-					//if(!key.startsWith("&")){key = "&"+key;}
-					//System.out.println("DEBUG K:"+key);
 					if(key.matches(ProcessSpecificCLI.FILTER_VARIABLE_NAME)){VarNameFound = true;}
 				}
 				if(!VarNameFound){JobSelected = false;}
@@ -102,6 +101,7 @@ public class GoRunCommand {
 				while(it.hasNext()){
 					String key = it.next();
 					String value = job.values().getValue(key);
+
 					if(value.matches(ProcessSpecificCLI.FILTER_VARIABLE_VALUE)){VarValueFound = true;}
 				}
 				if(!VarValueFound){JobSelected = false;}
@@ -124,11 +124,6 @@ public class GoRunCommand {
 			
 			String ObjectName = FilteredList.get(i).getName();
 			String ObjectTitle = FilteredList.get(i).getTitle();
-			
-		//	if(ProcessSpecificCLI.SIMULATE){
-				//System.out.println("  => Job Found: " + ObjectName +" : " + ObjectTitle);
-		//	}
-		//	else{
 			
 				UC4Object obj = Objbroker.common.openObject(ObjectName, false);
 				if(obj != null){

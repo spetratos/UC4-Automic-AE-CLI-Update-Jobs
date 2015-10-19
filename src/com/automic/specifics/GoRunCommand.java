@@ -134,7 +134,7 @@ public class GoRunCommand {
 				if(obj != null){
 					Job job = (Job) obj; 
 					
-					System.out.println("=> Job Found: " + ObjectName +" : " + ObjectTitle);
+					System.out.println(" ++  => Processing Matching JOBS: [ " + ObjectName +" | " + ObjectTitle +" ] ");
 
 					if(ProcessSpecificCLI.U_ACTIVE.equalsIgnoreCase("Y")){job.header().setActive(true);System.out.println("\t ++ UPDATE: Job Set To Active.");}
 					if(ProcessSpecificCLI.U_ACTIVE.equalsIgnoreCase("N")){job.header().setActive(false);System.out.println("\t ++ UPDATE: Job Set To Inactive.");}

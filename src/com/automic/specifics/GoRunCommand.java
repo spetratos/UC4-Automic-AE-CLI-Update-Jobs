@@ -20,10 +20,15 @@ import com.uc4.api.Template;
 import com.uc4.api.UC4HostName;
 import com.uc4.api.UC4ObjectName;
 import com.uc4.api.UC4TimezoneName;
+import com.uc4.api.objects.AttributesSQL;
+import com.uc4.api.objects.AttributesUnix;
+import com.uc4.api.objects.AttributesWin;
 import com.uc4.api.objects.CustomAttribute;
 import com.uc4.api.objects.DeactivateCondition;
 import com.uc4.api.objects.IFolder;
+import com.uc4.api.objects.IHostAttributes;
 import com.uc4.api.objects.Job;
+import com.uc4.api.objects.OCVPanel.CITValue;
 import com.uc4.api.objects.UC4Object;
 import com.uc4.communication.Connection;
 import com.uc4.communication.requests.SearchObject;
@@ -46,7 +51,9 @@ public class GoRunCommand {
 		List<SearchResultItem> FilteredList = new ArrayList<SearchResultItem>();
 		for(int i=0;i< GlobalList.size();i++){
 			Job job = (Job) Objbroker.common.openObject(GlobalList.get(i).getName(), true);
-		
+			
+			// Job type specific Attributes (Connection name for SQL job etc.)
+			
 			boolean JobSelected = true;
 			if(JobSelected && ProcessSpecificCLI.FILTER_ACTIVE.equals("Y")){ if(!job.header().isActive()) {JobSelected = false;}}
 			if(JobSelected && ProcessSpecificCLI.FILTER_ACTIVE.equals("N")){  if(job.header().isActive()) {JobSelected = false;}}
@@ -67,7 +74,6 @@ public class GoRunCommand {
 				Iterator<CustomAttribute> it = job.header().customAttributeIterator();
 				while(it.hasNext()){
 					CustomAttribute attr = it.next();
-					//System.out.println("Val:" + attr.getName()+":"+attr.getValue());
 					if(attr.getName().matches(ProcessSpecificCLI.FILTER_METADATA_NAME)){AttNameFound = true;}
 				}
 				if(!AttNameFound){JobSelected = false;}
@@ -78,7 +84,6 @@ public class GoRunCommand {
 				Iterator<CustomAttribute> it = job.header().customAttributeIterator();
 				while(it.hasNext()){
 					CustomAttribute attr = it.next();
-					//System.out.println("Val:" + attr.getName()+":"+attr.getValue());
 					if(attr.getValue().matches(ProcessSpecificCLI.FILTER_METADATA_VALUE)){AttValFound = true;}
 				}
 				if(!AttValFound){JobSelected = false;}
@@ -106,7 +111,35 @@ public class GoRunCommand {
 				}
 				if(!VarValueFound){JobSelected = false;}
 			}
+
+			if(job.getType().equals("JOBS_SQL")){
+				//AttributesSQL attr = (AttributesSQL) job.hostAttributes();
+				// if needed to filter on SQL specific stuff - put here
+			}
 			
+			if(job.getType().equals("JOBS_UNIX")){
+				// if needed to filter on Unix specific stuff - put here
+				//AttributesUnix attr = (AttributesUnix) job.hostAttributes();
+			}
+			
+			if(job.getType().equals("WINDOWS")){
+				// if needed to filter on Windows specific stuff - put here
+				//AttributesWin attr = (AttributesWin) job.hostAttributes();
+			}
+			
+			// if needed to filter on RA specific stuff - put here (Code below provided as an example)
+			if(job.getType().equals("JOBS_CIT")){
+				if(job.getRAJobType().equals("WEBSERVICE")){
+					if(job.getRASubJobType().equals("REST")){
+						// all values are XML formatted for RA Agents / RA Jobs
+						//Iterator<CITValue> itValues = job.ocvValues().iterator();
+						//while(itValues.hasNext()){
+						//	CITValue CITVal = itValues.next();
+							//System.out.println(CITVal.getXmlName()+":"+CITVal.getValue());
+						}
+					}
+				}
+
 			if (JobSelected){
 				FilteredList.add(GlobalList.get(i));
 			}

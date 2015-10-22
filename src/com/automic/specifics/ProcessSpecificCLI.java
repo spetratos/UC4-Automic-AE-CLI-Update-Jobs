@@ -186,6 +186,12 @@ public class ProcessSpecificCLI {
 	    	System.out.println("Version: "+Version.getVersion()+"\n");
 	    	HelpFormatter formatter = new HelpFormatter();
 	    	formatter.printHelp(300,"java -jar Command.jar","\n++ Parameters Are: \n\n", options,"", true );
+	    	
+	    	System.out.println(" === Examples: ===");
+	    	System.out.println("\t Update Process Tab (replace an IP adr by another one) for all JOBS objects with a name matching *JOBS.ABC* with a LOGIN containing *GENERAL");
+	    	System.out.println(" \t => java -jar command.jar -name \"*JOBS.ABC*\" -f_login \".*GENERAL\" -u_process [\"192.168.1.123\",\"192.861.1.321\"] \n"  );
+	    	System.out.println("\t list all JOBS objects running on a Queue matching *SYS* ");
+	    	System.out.println(" \t => java -jar command.jar -name \"*\" -f_queue \".*SYS.*\" \n"  );
 	    	System.exit(0);
 	    }
 	    

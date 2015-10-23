@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -49,102 +50,110 @@ public class GoRunCommand {
 		//2- retrieve your parameters.. and do what you want.
 		List<SearchResultItem> GlobalList = Objbroker.common.searchJobs(ProcessSpecificCLI.NAME);
 		List<SearchResultItem> FilteredList = new ArrayList<SearchResultItem>();
-		for(int i=0;i< GlobalList.size();i++){
-			Job job = (Job) Objbroker.common.openObject(GlobalList.get(i).getName(), true);
-			
-			// Job type specific Attributes (Connection name for SQL job etc.)
-			
-			boolean JobSelected = true;
-			if(JobSelected && ProcessSpecificCLI.FILTER_ACTIVE.equals("Y")){ if(!job.header().isActive()) {JobSelected = false;}}
-			if(JobSelected && ProcessSpecificCLI.FILTER_ACTIVE.equals("N")){  if(job.header().isActive()) {JobSelected = false;}}
-			if(JobSelected && !ProcessSpecificCLI.FILTER_NAME.equals("")){  if(!job.getName().matches(ProcessSpecificCLI.FILTER_NAME)) {JobSelected = false;}}
-			if(JobSelected && !ProcessSpecificCLI.FILTER_ARCHIVE1.equals("")){  if(!job.header().getArchiveKey1().matches(ProcessSpecificCLI.FILTER_ARCHIVE1)) {JobSelected = false;}}
-			if(JobSelected && !ProcessSpecificCLI.FILTER_ARCHIVE2.equals("")){ if(!job.header().getArchiveKey2().matches(ProcessSpecificCLI.FILTER_ARCHIVE2)) {JobSelected = false;}}
-			if(JobSelected && !ProcessSpecificCLI.FILTER_TITLE.equals("")){ if(!job.header().getTitle().matches(ProcessSpecificCLI.FILTER_TITLE)) {JobSelected = false;}}
-			if(JobSelected && !ProcessSpecificCLI.FILTER_HOST.equals("")){ if(!job.attributes().getHost().toString().matches(ProcessSpecificCLI.FILTER_HOST)) {JobSelected = false;}}
-			if(JobSelected && !ProcessSpecificCLI.FILTER_LOGIN.equals("")){ if(!job.attributes().getLogin().toString().matches(ProcessSpecificCLI.FILTER_LOGIN)) {JobSelected = false;}}
-			// in the following line (?s) allows matching new lines.. which is essential when matching Process to a regex!!
-			if(JobSelected && !ProcessSpecificCLI.FILTER_POSTPROCESS_KEYWORD.equals("")){ if(!job.getPostProcess().matches("(?s)"+ProcessSpecificCLI.FILTER_POSTPROCESS_KEYWORD)) {JobSelected = false;}}
-			if(JobSelected && !ProcessSpecificCLI.FILTER_PREPROCESS_KEYWORD.equals("")){ if(!job.getPreProcess().matches("(?s)"+ProcessSpecificCLI.FILTER_PREPROCESS_KEYWORD)) {JobSelected = false;}}
-			if(JobSelected && !ProcessSpecificCLI.FILTER_PROCESS_KEYWORD.equals("")){ if(!job.getProcess().matches("(?s)"+ProcessSpecificCLI.FILTER_PROCESS_KEYWORD)) {JobSelected = false;}}
-			if(JobSelected && !ProcessSpecificCLI.FILTER_QUEUE.equals("")){ if(!job.attributes().getQueue().toString().matches(ProcessSpecificCLI.FILTER_QUEUE)) {JobSelected = false;}}
-			
-			if(JobSelected && !ProcessSpecificCLI.FILTER_METADATA_NAME.equals("")){ 
-				boolean AttNameFound = false;
-				Iterator<CustomAttribute> it = job.header().customAttributeIterator();
-				while(it.hasNext()){
-					CustomAttribute attr = it.next();
-					if(attr.getName().matches(ProcessSpecificCLI.FILTER_METADATA_NAME)){AttNameFound = true;}
-				}
-				if(!AttNameFound){JobSelected = false;}
-			}
-			
-			if(JobSelected && !ProcessSpecificCLI.FILTER_METADATA_VALUE.equals("")){ 
-				boolean AttValFound = false;
-				Iterator<CustomAttribute> it = job.header().customAttributeIterator();
-				while(it.hasNext()){
-					CustomAttribute attr = it.next();
-					if(attr.getValue().matches(ProcessSpecificCLI.FILTER_METADATA_VALUE)){AttValFound = true;}
-				}
-				if(!AttValFound){JobSelected = false;}
-			}
-			
-			if(JobSelected && !ProcessSpecificCLI.FILTER_VARIABLE_NAME.equals("")){ 
-				boolean VarNameFound = false;
-				Iterator<String> it = job.values().valueKeyIterator();
-				while(it.hasNext()){
-					String key = it.next();
-					if(key.matches(ProcessSpecificCLI.FILTER_VARIABLE_NAME)){VarNameFound = true;}
-				}
-				if(!VarNameFound){JobSelected = false;}
-			}
-			
-			if(JobSelected && !ProcessSpecificCLI.FILTER_VARIABLE_VALUE.equals("")){ 
-				boolean VarValueFound = false;
-				Iterator<String> it = job.values().valueKeyIterator();
+		try{
+			for(int i=0;i< GlobalList.size();i++){
+				Job job = (Job) Objbroker.common.openObject(GlobalList.get(i).getName(), true);
 				
-				while(it.hasNext()){
-					String key = it.next();
-					String value = job.values().getValue(key);
-
-					if(value.matches(ProcessSpecificCLI.FILTER_VARIABLE_VALUE)){VarValueFound = true;}
+				// Job type specific Attributes (Connection name for SQL job etc.)
+				
+				boolean JobSelected = true;
+				if(JobSelected && ProcessSpecificCLI.FILTER_ACTIVE.equals("Y")){ if(!job.header().isActive()) {JobSelected = false;}}
+				if(JobSelected && ProcessSpecificCLI.FILTER_ACTIVE.equals("N")){  if(job.header().isActive()) {JobSelected = false;}}
+				if(JobSelected && !ProcessSpecificCLI.FILTER_NAME.equals("")){  if(!job.getName().matches(ProcessSpecificCLI.FILTER_NAME)) {JobSelected = false;}}
+				if(JobSelected && !ProcessSpecificCLI.FILTER_ARCHIVE1.equals("")){  if(!job.header().getArchiveKey1().matches(ProcessSpecificCLI.FILTER_ARCHIVE1)) {JobSelected = false;}}
+				if(JobSelected && !ProcessSpecificCLI.FILTER_ARCHIVE2.equals("")){ if(!job.header().getArchiveKey2().matches(ProcessSpecificCLI.FILTER_ARCHIVE2)) {JobSelected = false;}}
+				if(JobSelected && !ProcessSpecificCLI.FILTER_TITLE.equals("")){ if(!job.header().getTitle().matches(ProcessSpecificCLI.FILTER_TITLE)) {JobSelected = false;}}
+				if(JobSelected && !ProcessSpecificCLI.FILTER_HOST.equals("")){ if(!job.attributes().getHost().toString().matches(ProcessSpecificCLI.FILTER_HOST)) {JobSelected = false;}}
+				if(JobSelected && !ProcessSpecificCLI.FILTER_LOGIN.equals("")){ if(!job.attributes().getLogin().toString().matches(ProcessSpecificCLI.FILTER_LOGIN)) {JobSelected = false;}}
+				// in the following line (?s) allows matching new lines.. which is essential when matching Process to a regex!!
+				if(JobSelected && !ProcessSpecificCLI.FILTER_POSTPROCESS_KEYWORD.equals("")){ if(!job.getPostProcess().matches("(?s)"+ProcessSpecificCLI.FILTER_POSTPROCESS_KEYWORD)) {JobSelected = false;}}
+				if(JobSelected && !ProcessSpecificCLI.FILTER_PREPROCESS_KEYWORD.equals("")){ if(!job.getPreProcess().matches("(?s)"+ProcessSpecificCLI.FILTER_PREPROCESS_KEYWORD)) {JobSelected = false;}}
+				if(JobSelected && !ProcessSpecificCLI.FILTER_PROCESS_KEYWORD.equals("")){ if(!job.getProcess().matches("(?s)"+ProcessSpecificCLI.FILTER_PROCESS_KEYWORD)) {JobSelected = false;}}
+				if(JobSelected && !ProcessSpecificCLI.FILTER_QUEUE.equals("")){ if(!job.attributes().getQueue().toString().matches(ProcessSpecificCLI.FILTER_QUEUE)) {JobSelected = false;}}
+				
+				if(JobSelected && !ProcessSpecificCLI.FILTER_METADATA_NAME.equals("")){ 
+					boolean AttNameFound = false;
+					Iterator<CustomAttribute> it = job.header().customAttributeIterator();
+					while(it.hasNext()){
+						CustomAttribute attr = it.next();
+						if(attr.getName().matches(ProcessSpecificCLI.FILTER_METADATA_NAME)){AttNameFound = true;}
+					}
+					if(!AttNameFound){JobSelected = false;}
 				}
-				if(!VarValueFound){JobSelected = false;}
-			}
-
-			if(job.getType().equals("JOBS_SQL")){
-				//AttributesSQL attr = (AttributesSQL) job.hostAttributes();
-				// if needed to filter on SQL specific stuff - put here
-			}
-			
-			if(job.getType().equals("JOBS_UNIX")){
-				// if needed to filter on Unix specific stuff - put here
-				//AttributesUnix attr = (AttributesUnix) job.hostAttributes();
-			}
-			
-			if(job.getType().equals("WINDOWS")){
-				// if needed to filter on Windows specific stuff - put here
-				//AttributesWin attr = (AttributesWin) job.hostAttributes();
-			}
-			
-			// if needed to filter on RA specific stuff - put here (Code below provided as an example)
-			if(job.getType().equals("JOBS_CIT")){
-				if(job.getRAJobType().equals("WEBSERVICE")){
-					if(job.getRASubJobType().equals("REST")){
-						// all values are XML formatted for RA Agents / RA Jobs
-						//Iterator<CITValue> itValues = job.ocvValues().iterator();
-						//while(itValues.hasNext()){
-						//	CITValue CITVal = itValues.next();
-							//System.out.println(CITVal.getXmlName()+":"+CITVal.getValue());
+				
+				if(JobSelected && !ProcessSpecificCLI.FILTER_METADATA_VALUE.equals("")){ 
+					boolean AttValFound = false;
+					Iterator<CustomAttribute> it = job.header().customAttributeIterator();
+					while(it.hasNext()){
+						CustomAttribute attr = it.next();
+						if(attr.getValue().matches(ProcessSpecificCLI.FILTER_METADATA_VALUE)){AttValFound = true;}
+					}
+					if(!AttValFound){JobSelected = false;}
+				}
+				
+				if(JobSelected && !ProcessSpecificCLI.FILTER_VARIABLE_NAME.equals("")){ 
+					boolean VarNameFound = false;
+					Iterator<String> it = job.values().valueKeyIterator();
+					while(it.hasNext()){
+						String key = it.next();
+						if(key.matches(ProcessSpecificCLI.FILTER_VARIABLE_NAME)){VarNameFound = true;}
+					}
+					if(!VarNameFound){JobSelected = false;}
+				}
+				
+				if(JobSelected && !ProcessSpecificCLI.FILTER_VARIABLE_VALUE.equals("")){ 
+					boolean VarValueFound = false;
+					Iterator<String> it = job.values().valueKeyIterator();
+					
+					while(it.hasNext()){
+						String key = it.next();
+						String value = job.values().getValue(key);
+	
+						if(value.matches(ProcessSpecificCLI.FILTER_VARIABLE_VALUE)){VarValueFound = true;}
+					}
+					if(!VarValueFound){JobSelected = false;}
+				}
+	
+				if(job.getType().equals("JOBS_SQL")){
+					//AttributesSQL attr = (AttributesSQL) job.hostAttributes();
+					// if needed to filter on SQL specific stuff - put here
+				}
+				
+				if(job.getType().equals("JOBS_UNIX")){
+					// if needed to filter on Unix specific stuff - put here
+					//AttributesUnix attr = (AttributesUnix) job.hostAttributes();
+				}
+				
+				if(job.getType().equals("WINDOWS")){
+					// if needed to filter on Windows specific stuff - put here
+					//AttributesWin attr = (AttributesWin) job.hostAttributes();
+				}
+				
+				// if needed to filter on RA specific stuff - put here (Code below provided as an example)
+				if(job.getType().equals("JOBS_CIT")){
+					if(job.getRAJobType().equals("WEBSERVICE")){
+						if(job.getRASubJobType().equals("REST")){
+							// all values are XML formatted for RA Agents / RA Jobs
+							//Iterator<CITValue> itValues = job.ocvValues().iterator();
+							//while(itValues.hasNext()){
+							//	CITValue CITVal = itValues.next();
+								//System.out.println(CITVal.getXmlName()+":"+CITVal.getValue());
+							}
 						}
 					}
+	
+				if (JobSelected){
+					FilteredList.add(GlobalList.get(i));
 				}
-
-			if (JobSelected){
-				FilteredList.add(GlobalList.get(i));
 			}
+		}catch (PatternSyntaxException e){
+			System.out.println(" -- Internal Error. The Regular Expression Used for one of the Filters is invalid - See Error Below: " + e.getDescription());
+			System.out.println("\t\t"+ e.toString());
+			System.out.println(" %% HINT: '*' and '+' are NOT valid Regular Expressions on their own. '*' marks '0 or more' and '+' marks '1 or more', but you need to specify a preceeding character or string" );
+			System.out.println(" %% HINT: Ex: invalid expressions: '*ABC*', '*.123', '+DEF'. Valid expressions: '.*ABC.*', '.*.123', '.+DEF' " );
+	
+			System.exit(999);
 		}
-
 		if(ProcessSpecificCLI.SIMULATE){
 			System.out.println("%% => Simulation Mode - Nothing will be updated. [ Hint: Run commit option to update objects (-commit) ] <= %% \n");
 		}

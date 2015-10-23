@@ -44,7 +44,7 @@ public class GoRunCommand {
 		//1- Add / modify the parameters you need for your action in ProcessSpecificCLI class
 		ProcessSpecificCLI.processSpecificParameters(args);
 
-		Connection ClientConnection = new ConnectionManager().connectToClient(creds);
+		Connection ClientConnection = new ConnectionManager().connectToClient(creds);  
 		ObjectBroker Objbroker = new ObjectBroker(ClientConnection,false);
 	
 		//2- retrieve your parameters.. and do what you want.

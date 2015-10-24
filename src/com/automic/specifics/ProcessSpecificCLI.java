@@ -8,6 +8,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import com.automic.std.ExtendedParser;
+import com.automic.std.HelpLabels;
+import com.automic.std.consistencyUtils;
 
 public class ProcessSpecificCLI {
 
@@ -64,44 +66,43 @@ public class ProcessSpecificCLI {
 		Options options = new Options();
 
 		// 1- add your options below this line
-		options.addOption( "name", true, "[MANDATORY] Job Name To Update (can use '*' or '?')\n" );
-		options.addOption( "f_name", true, "[OPTIONAL] Filter by Job Name (can use RegEx)" );
-		options.addOption( "f_host", true, "[OPTIONAL] Filter by HOST (can use RegEx)" );
-		options.addOption( "f_login", true, "[OPTIONAL] Filter by LOGIN (can use RegEx)" );
-		options.addOption( "f_queue", true, "[OPTIONAL] Filter by QUEUE (can use RegEx)" );
-		options.addOption( "f_title", true, "[OPTIONAL] Filter by TITLE (can use RegEx)" );
-		options.addOption( "f_active", false, "[OPTIONAL] Filter Active or Inactive Jobs only, value is: \"Y\" or \"N\"" );
-		options.addOption( "f_arch1", true, "[OPTIONAL] Filter by Archive key 1 (can use RegEx)" );
-		options.addOption( "f_arch2", true, "[OPTIONAL] Filter by Archive Key 2 (can use RegEx)" );
-		options.addOption( "f_varname", true, "[OPTIONAL] Filter by Variable Name (can use RegEx)" );
-		options.addOption( "f_varvalue", true, "[OPTIONAL] Filter by Variable Value (can use RegEx)" + "\n" );
-		options.addOption( "f_mdataname", true, "[OPTIONAL] Filter by Metadata Name (can use RegEx)" );
-		options.addOption( "f_mdatavalue", true, "[OPTIONAL] Filter by Metadata Value (can use RegEx)" );
-		options.addOption( "f_process", true, "[OPTIONAL] Filter by keyword in Process (can use RegEx)" );
-		options.addOption( "f_preprocess", true, "[OPTIONAL] Filter by keyword in PreProcess (can use RegEx)" );
-		options.addOption( "f_postprocess", true, "[OPTIONAL] Filter by keyword in PostProcess (can use RegEx)");
+		options.addOption( "name", true, HelpLabels.MANDATORY+HelpLabels.META_FILTER+"Name.\n" );
+		options.addOption( "f_name", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"Name.");
+		options.addOption( "f_host", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"HOST." );
+		options.addOption( "f_login", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"LOGIN." );
+		options.addOption( "f_queue", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"QUEUE." );
+		options.addOption( "f_title", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"TITLE." );
+		options.addOption( "f_active", false, HelpLabels.OPTIONAL+HelpLabels.BOOLEAN_FILTER+"Active or Inactive State." );
+		options.addOption( "f_arch1", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"Archive key 1." );
+		options.addOption( "f_arch2", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"Archive Key 2." );
+		options.addOption( "f_varname", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"Variable Name." );
+		options.addOption( "f_varvalue", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"Variable Value." + "\n" );
+		options.addOption( "f_mdataname", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"Metadata Name." );
+		options.addOption( "f_mdatavalue", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"Metadata Value." );
+		options.addOption( "f_process", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"keyword in Process." );
+		options.addOption( "f_postprocess", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"keyword in PostProcess.");
+		options.addOption( "f_preprocess", true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"keyword in PreProcess.");
 		
-		options.addOption( "u_login", true, "[OPTIONAL] Update LOGIN value. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] - RegEx Not Supported" );
-		options.addOption( "u_host", true, "[OPTIONAL] Update HOST value. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] - RegEx Not Supported");
-		options.addOption( "u_process", true, "[OPTIONAL] Update PROCESS. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] - RegEx Not Supported");
-		options.addOption( "u_title", true, "[OPTIONAL] Update TITLE value. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] - RegEx Not Supported");
-		options.addOption( "u_queue", true, "[OPTIONAL] Update QUEUE value. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] - RegEx Not Supported");
-		options.addOption( "u_timezone", true, "[OPTIONAL] Update TIMEZONE value. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] - RegEx Not Supported" );
-		options.addOption( "u_addvar", true, "[OPTIONAL] Add Variable to Job. Format: [\"&VARNAME\",\"VARVALUE\"] - RegEx NOT Supported");
-		options.addOption( "u_updvar", true, "[OPTIONAL] Update Variable in Job. Format: [\"&VARNAME\",\"VARVALUE\"] - RegEx NOT Supported\n");
-		options.addOption( "u_delvar", true, "[OPTIONAL] Delete Variable from Job. Format: \"&VARNAME\" - RegEx NOT Supported");
-		options.addOption( "u_priority", true, "[OPTIONAL] Update PRIORITY value. Format: Integer between 0 and 255");
-		options.addOption( "u_genatruntime", true, "[OPTIONAL] Update Generate At Runtime. Possible Values: \"Y\" or \"N\"");
-		options.addOption( "u_active", true, "[OPTIONAL] Activate or Deactivate job. Possible Values: \"Y\" or \"N\"");
-		options.addOption( "u_preprocess", true, "[OPTIONAL] Update PREPROCESS. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] - RegEx Not Supported");
-		options.addOption( "u_postprocess", true, "[OPTIONAL] Update POSTPROCESS. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] - RegEx Not Supported");
-		options.addOption( "u_maxruns", true, "[OPTIONAL] Update Max Parallel Runs value. Format: Integer");
-		options.addOption( "u_arch1", true, "[OPTIONAL] Update Archive Key 1. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] - RegEx Not Supported");
-		options.addOption( "u_arch2", true, "[OPTIONAL] Update Archive Key 2. Format: [\"OLDKEYWORD\",\"NEWKEYWORD\"] - RegEx Not Supported");
-		options.addOption( "u_addmdata", true, "[OPTIONAL] Add Metadata Tag. Format: [\"TAGNAME\",\"TAGVALUE\"] - RegEx NOT Supported");
-		//options.addOption( "u_updmdata", true, "[OPTIONAL] Format: [\"VAR.NAME\",\"VAR.VALUE\"] or [\"OLD*\",\"NEW\"]- Change LOGIN to this value in selected Jobs (can use '*' or '?')");
-		options.addOption( "u_delmdata", true, "[OPTIONAL] Delete existing Metadata Tag. Format: \"&METADATATAGNAME\" - RegEx NOT Supported");
-		
+		options.addOption( "u_login", true,  HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update LOGIN FROM value." );
+		options.addOption( "u_host", true, HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update HOST FROM value.");
+		options.addOption( "u_process", true, HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update PROCESS.");
+		options.addOption( "u_title", true, HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update TITLE value.");
+		options.addOption( "u_queue", true, HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update QUEUE value.");
+		options.addOption( "u_timezone", true, HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update TIMEZONE value." );
+		options.addOption( "u_addvar", true, HelpLabels.OPTIONAL+HelpLabels.VARIABLE_UPDATE+ "Add Variable.");
+		options.addOption( "u_updvar", true, HelpLabels.OPTIONAL+HelpLabels.VARIABLE_UPDATE+ "Update Variable Value.");
+		options.addOption( "u_delvar", true, HelpLabels.OPTIONAL+HelpLabels.STD_UPDATE+ "Delete Variable.");
+		options.addOption( "u_priority", true,  HelpLabels.OPTIONAL+HelpLabels.INT_UPDATE+ "Update Priority.");
+		options.addOption( "u_genatruntime", true,  HelpLabels.OPTIONAL+HelpLabels.BOOLEAN_UPDATE+ "Generate At Runtime.");
+		options.addOption( "u_active", true, HelpLabels.OPTIONAL+HelpLabels.BOOLEAN_UPDATE+ "Activate / Deactivate.");
+		options.addOption( "u_postprocess", true,  HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update PostProcess.");
+		options.addOption( "u_preprocess", true,  HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update PreProcess.");
+		options.addOption( "u_maxruns", true,  HelpLabels.OPTIONAL+HelpLabels.INT_UPDATE+ "Max Parallel Runs.");
+		options.addOption( "u_arch1", true, HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update Archive Key 1 value.");
+		options.addOption( "u_arch2", true, HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update Archive Key 2 value.");
+		options.addOption( "u_addmdata", true,  HelpLabels.OPTIONAL+HelpLabels.VARIABLE_UPDATE+ "Add Metadata Tag.");
+		options.addOption( "u_delmdata", true,  HelpLabels.OPTIONAL+HelpLabels.STD_UPDATE+ "Delete Metadata Tag.");
+
 		options.addOption( "commit", false, "[OPTIONAL] Commit Update (By Default, only a simulation is ran)"  + "\n" );
 		//options.addOption( "simulatelist", false, "[OPTIONAL] Simulate Update (does not update anything)" );
 		
@@ -138,36 +139,36 @@ public class ProcessSpecificCLI {
 	    // 4- check only mandatory parameters!!
 	    boolean ERROR_FREE=true;
 		
-		if( line.hasOption( "u_host" )) {if(checkValueStructure(line.getOptionValue("u_host"))){U_HOST = line.getOptionValue("u_host");}else{System.out.println(" -- Error in Value for u_host. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_login" )) {if(checkValueStructure(line.getOptionValue("u_login"))){U_LOGIN = line.getOptionValue("u_login");}else{System.out.println(" -- Error in Value for u_login. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_process" )) {if(checkValueStructure(line.getOptionValue("u_process"))){U_PROCESS = line.getOptionValue("u_process");}else{System.out.println(" -- Error in Value for u_process. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_title" )) {if(checkValueStructure(line.getOptionValue("u_title"))){U_TITLE = line.getOptionValue("u_title");}else{System.out.println(" -- Error in Value for u_title. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_queue" )) {if(checkValueStructure(line.getOptionValue("u_queue"))){U_QUEUE = line.getOptionValue("u_queue");}else{System.out.println(" -- Error in Value for u_queue. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_timezone" )) {if(checkValueStructure(line.getOptionValue("u_timezone"))){U_TZ = line.getOptionValue("u_timezone");}else{System.out.println(" -- Error in Value for u_timezone. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_addvar" )) {if(checkValueStructure(line.getOptionValue("u_addvar"))){U_ADD_VARIABLE = line.getOptionValue("u_addvar");}else{System.out.println(" -- Error in Value for u_addvar. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_updvar" )) {if(checkValueStructure(line.getOptionValue("u_updvar"))){U_UPD_VARIABLE = line.getOptionValue("u_updvar");}else{System.out.println(" -- Error in Value for u_updvar. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_delvar" )) {if(checkValueStructure(line.getOptionValue("u_delvar"))){U_DEL_VARIABLE = line.getOptionValue("u_delvar");}else{System.out.println(" -- Error in Value for u_delvar. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_host" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_host"))){U_HOST = line.getOptionValue("u_host");}else{System.out.println(" -- Error in Value for u_host. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_login" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_login"))){U_LOGIN = line.getOptionValue("u_login");}else{System.out.println(" -- Error in Value for u_login. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_process" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_process"))){U_PROCESS = line.getOptionValue("u_process");}else{System.out.println(" -- Error in Value for u_process. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_title" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_title"))){U_TITLE = line.getOptionValue("u_title");}else{System.out.println(" -- Error in Value for u_title. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_queue" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_queue"))){U_QUEUE = line.getOptionValue("u_queue");}else{System.out.println(" -- Error in Value for u_queue. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_timezone" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_timezone"))){U_TZ = line.getOptionValue("u_timezone");}else{System.out.println(" -- Error in Value for u_timezone. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_addvar" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_addvar"))){U_ADD_VARIABLE = line.getOptionValue("u_addvar");}else{System.out.println(" -- Error in Value for u_addvar. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_updvar" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_updvar"))){U_UPD_VARIABLE = line.getOptionValue("u_updvar");}else{System.out.println(" -- Error in Value for u_updvar. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_delvar" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_delvar"))){U_DEL_VARIABLE = line.getOptionValue("u_delvar");}else{System.out.println(" -- Error in Value for u_delvar. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
 		
 		if( line.hasOption( "u_priority" )) {
-			if(isInteger(line.getOptionValue("u_priority"))){U_PRIORITY = Integer.parseInt((line.getOptionValue("u_priority")));
+			if(consistencyUtils.isInteger(line.getOptionValue("u_priority"))){U_PRIORITY = Integer.parseInt((line.getOptionValue("u_priority")));
 			}else{System.out.println(" -- Error: Cannot Update Priority to non Integer value..");ERROR_FREE=false;}}	
 		if( line.hasOption( "u_maxruns" )) {
-			if(isInteger(line.getOptionValue("u_maxruns"))){U_MAXNUMBERRUN = Integer.parseInt((line.getOptionValue("u_maxruns")));
+			if(consistencyUtils.isInteger(line.getOptionValue("u_maxruns"))){U_MAXNUMBERRUN = Integer.parseInt((line.getOptionValue("u_maxruns")));
 			}else{System.out.println(" -- Error: Cannot Update Max Parallel Runs to non Integer value..");ERROR_FREE=false;}}	
 		if( line.hasOption( "u_genatruntime" )) {
-			if(checkStringIsYorN(line.getOptionValue("u_genatruntime"))){U_GENERATEATRUNTIME = line.getOptionValue("u_genatruntime");
+			if(consistencyUtils.checkStringIsYorN(line.getOptionValue("u_genatruntime"))){U_GENERATEATRUNTIME = line.getOptionValue("u_genatruntime");
 			}else{System.out.println(" -- Error: genatruntime needs to be set to Y or N..");ERROR_FREE=false;}}
 		if( line.hasOption( "u_active" )) {
-			if(checkStringIsYorN(line.getOptionValue("u_active"))){U_ACTIVE = line.getOptionValue("u_active");
+			if(consistencyUtils.checkStringIsYorN(line.getOptionValue("u_active"))){U_ACTIVE = line.getOptionValue("u_active");
 			}else{System.out.println(" -- Error: active needs to be set to Y or N..");ERROR_FREE=false;}}
 		
-		if( line.hasOption( "u_preprocess" )) {if(checkValueStructure(line.getOptionValue("u_preprocess"))){U_PREPROCESS = line.getOptionValue("u_preprocess");}else{System.out.println(" -- Error in Value for u_preprocess. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_postprocess" )) {if(checkValueStructure(line.getOptionValue("u_postprocess"))){U_POSTPROCESS = line.getOptionValue("u_postprocess");}else{System.out.println(" -- Error in Value for u_postprocess. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_arch1" )) {if(checkValueStructure(line.getOptionValue("u_arch1"))){U_ARCH1 = line.getOptionValue("u_arch1");}else{System.out.println(" -- Error in Value for u_arch1. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_arch2" )) {if(checkValueStructure(line.getOptionValue("u_arch2"))){U_ARCH2 = line.getOptionValue("u_arch2");}else{System.out.println(" -- Error in Value for u_arch2. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_addmdata" )) {if(checkValueStructure(line.getOptionValue("u_addmdata"))){U_ADD_MDATA = line.getOptionValue("u_addmdata");}else{System.out.println(" -- Error in Value for u_addmdata. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_preprocess" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_preprocess"))){U_PREPROCESS = line.getOptionValue("u_preprocess");}else{System.out.println(" -- Error in Value for u_preprocess. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_postprocess" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_postprocess"))){U_POSTPROCESS = line.getOptionValue("u_postprocess");}else{System.out.println(" -- Error in Value for u_postprocess. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_arch1" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_arch1"))){U_ARCH1 = line.getOptionValue("u_arch1");}else{System.out.println(" -- Error in Value for u_arch1. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_arch2" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_arch2"))){U_ARCH2 = line.getOptionValue("u_arch2");}else{System.out.println(" -- Error in Value for u_arch2. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( "u_addmdata" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_addmdata"))){U_ADD_MDATA = line.getOptionValue("u_addmdata");}else{System.out.println(" -- Error in Value for u_addmdata. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
 		//if( line.hasOption( "u_updmdata" )) {if(checkValueStructure(line.getOptionValue("u_updmdata"))){U_UPD_MDATA = line.getOptionValue("u_updmdata");}else{System.out.println(" -- Error in Value for u_updmdata. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( "u_delmdata" )) {if(checkValueStructure(line.getOptionValue("u_delmdata"))){U_DEL_MDATA = line.getOptionValue("u_delmdata");}else{System.out.println(" -- Error in Value for u_delmdata. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}	
+		if( line.hasOption( "u_delmdata" )) {if(consistencyUtils.checkValueStructure(line.getOptionValue("u_delmdata"))){U_DEL_MDATA = line.getOptionValue("u_delmdata");}else{System.out.println(" -- Error in Value for u_delmdata. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}	
 		
 	    if( line.hasOption( "commit" )) {SIMULATE = false;}
 
@@ -201,41 +202,4 @@ public class ProcessSpecificCLI {
 	    }
 		
 	}
-	//["DEF","GENERAL"] or ["*","LOGIN.GENERAL"]
-	public static boolean checkValueStructure(String s){
-		if(!s.startsWith("[")){return false;}
-		if(!s.endsWith("]")){return false;}
-		if(!s.contains(",")){return false;}
-		String[] RawVals = s.split(","); // splits ["old.name","new.name"] right in the middle
-		if(RawVals.length != 2){return false;}
-		if(RawVals[0].isEmpty()){return false;}
-		if(RawVals[1].isEmpty()){return false;}
-		
-		return true;
-	}
-	
-	public static boolean isInteger(String s) {
-	    return isInteger(s,10);
-	}
-
-	public static boolean checkStringIsYorN(String s){
-		if(s.equalsIgnoreCase("Y")){return true;}
-		if(s.equalsIgnoreCase("N")){return true;}
-		return false;
-	}
-	public static boolean isInteger(String s, int radix) {
-	    if(s.isEmpty()) return false;
-	    for(int i = 0; i < s.length(); i++) {
-	        if(i == 0 && s.charAt(i) == '-') {
-	            if(s.length() == 1) return false;
-	            else continue;
-	        }
-	        if(Character.digit(s.charAt(i),radix) < 0) return false;
-	    }
-	    return true;
-	}
-	public static String ConvertIntToString(int i){
-		return Integer.toString(i);
-	}
-
 }

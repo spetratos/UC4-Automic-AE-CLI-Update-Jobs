@@ -40,7 +40,7 @@ public class GoRunCommand {
 		
 		ProcessStandardCLI StdProc = new ProcessStandardCLI();
 		AECredentials creds = StdProc.processStdCredentials(args);
-		
+		if(creds == null){System.exit(1000);}
 		//1- Add / modify the parameters you need for your action in ProcessSpecificCLI class
 		ProcessSpecificCLI.processSpecificParameters(args);
 

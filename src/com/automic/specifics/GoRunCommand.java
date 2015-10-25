@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
 import com.automic.AECredentials;
 import com.automic.ConnectionManager;
 import com.automic.objects.ObjectBroker;
+import com.automic.std.HelpLabels;
 import com.automic.std.ProcessStandardCLI;
 import com.automic.std.consistencyUtils;
 import com.uc4.api.SearchResultItem;
@@ -51,6 +52,9 @@ public class GoRunCommand {
 		Connection ClientConnection = new ConnectionManager().connectToClient(creds);  
 		ObjectBroker Objbroker = new ObjectBroker(ClientConnection,false);
 	
+		if(ProcessSpecificCLI.SIMULATE){
+			System.out.println(HelpLabels.DISPLAY_SIMULATION);
+		}
 		//2- retrieve your parameters.. and do what you want.
 		List<SearchResultItem> GlobalList = Objbroker.common.searchJobs(ProcessSpecificCLI.NAME);
 		List<SearchResultItem> FilteredList = new ArrayList<SearchResultItem>();
@@ -157,9 +161,6 @@ public class GoRunCommand {
 			System.out.println(" %% HINT: Ex: invalid expressions: '*ABC*', '*.123', '+DEF'. Valid expressions: '.*ABC.*', '.*.123', '.+DEF' " );
 	
 			System.exit(999);
-		}
-		if(ProcessSpecificCLI.SIMULATE){
-			System.out.println("%% => Simulation Mode - Nothing will be updated. [ Hint: Run commit option to update objects (-commit) ] <= %% \n");
 		}
 		
 		if(FilteredList.size() == 0){

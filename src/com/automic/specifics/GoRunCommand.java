@@ -17,6 +17,7 @@ import com.automic.ConnectionManager;
 import com.automic.objects.ObjectBroker;
 import com.automic.std.HelpLabels;
 import com.automic.std.ProcessStandardCLI;
+import com.automic.std.VersionUtils;
 import com.automic.std.consistencyUtils;
 import com.uc4.api.SearchResultItem;
 import com.uc4.api.Template;
@@ -51,7 +52,13 @@ public class GoRunCommand {
 		
 		Connection ClientConnection = new ConnectionManager().connectToClient(creds);  
 		ObjectBroker Objbroker = new ObjectBroker(ClientConnection,false);
-	
+		
+		String version = Objbroker.automationEngine.getServerVersion();
+		if(!VersionUtils.isCompatible(version, Version.MinimumAEVersion)){
+			System.out.println(" -- Error: Incompatible Version. Minimum AE Version: " + Version.MinimumAEVersion);
+			System.exit(99);
+		}
+		
 		if(ProcessSpecificCLI.SIMULATE){
 			System.out.println(HelpLabels.DISPLAY_SIMULATION);
 		}

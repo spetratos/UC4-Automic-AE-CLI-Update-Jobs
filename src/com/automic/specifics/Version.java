@@ -7,6 +7,7 @@ public class Version {
 	public static String ReleaseNum = "5";
 	public static String ProgramName = "Update JOBS";
 	public static String Description = "Update JOBS Objects";
+	static String MinimumAEVersion = "9.0.0";
 	
 	public static String getVersion(){
 		return MajorVersion+"."+MinorVersion+"."+ReleaseNum;

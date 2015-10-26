@@ -41,6 +41,9 @@ public class ProcessSpecificCLI extends ProcessSpecCLI{
 		options.addOption( L_F_PREPROCESS_KEYWORD, true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"keyword in PreProcess." );
 		options.addOption( L_F_POSTPROCESS_KEYWORD, true, HelpLabels.OPTIONAL+HelpLabels.REGEX_FILTER+"keyword in PostProcess.");
 		
+		options.addOption( L_U_RESTORE_PREVIOUS, false,  HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+ "Restore Previous Version." );
+		options.addOption( L_U_RESTORE_VERSION, true,  HelpLabels.OPTIONAL+HelpLabels.INT_UPDATE+ "Restore a given Version." );
+
 		options.addOption( L_U_LOGIN, true,  HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update LOGIN value." );
 		options.addOption( L_U_HOST, true, HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update HOST value.");
 		options.addOption( L_U_PROCESS, true, HelpLabels.OPTIONAL+HelpLabels.PATTERN_UPDATE+ "Update PROCESS.");
@@ -110,6 +113,12 @@ public class ProcessSpecificCLI extends ProcessSpecCLI{
 			if(consistencyUtils.checkStringIsYorN(line.getOptionValue(L_U_ACTIVE))){U_ACTIVE = line.getOptionValue(L_U_ACTIVE);
 			}else{System.out.println(" -- Error: active needs to be set to Y or N..");ERROR_FREE=false;}}
 		
+		if( line.hasOption( L_U_RESTORE_PREVIOUS )) {U_RESTORE_PREVIOUS = true;}
+		if( line.hasOption( L_U_RESTORE_VERSION )) {
+			if(consistencyUtils.isInteger(line.getOptionValue(L_U_RESTORE_VERSION))){U_RESTORE_VERSION = Integer.parseInt((line.getOptionValue(L_U_RESTORE_VERSION)));
+			}else{System.out.println(" -- Error: Version Number should be .. a Number.");ERROR_FREE=false;}}	
+
+		
 		if( line.hasOption( L_U_POSTPROCESS )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_POSTPROCESS))){U_POSTPROCESS = line.getOptionValue(L_U_POSTPROCESS);}else{System.out.println(" -- Error in Value for u_postprocess. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
 		if( line.hasOption( L_U_PREPROCESS )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_PREPROCESS))){U_PREPROCESS = line.getOptionValue(L_U_PREPROCESS);}else{System.out.println(" -- Error in Value for u_postprocess. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
 		if( line.hasOption( L_U_ARCH1 )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_ARCH1))){U_ARCH1 = line.getOptionValue(L_U_ARCH1);}else{System.out.println(" -- Error in Value for u_arch1. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
@@ -117,7 +126,7 @@ public class ProcessSpecificCLI extends ProcessSpecCLI{
 		if( line.hasOption( L_U_ADD_MDATA )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_ADD_MDATA))){U_ADD_MDATA = line.getOptionValue(L_U_ADD_MDATA);}else{System.out.println(" -- Error in Value for u_addmdata. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
 		if( line.hasOption( L_U_DEL_MDATA )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_DEL_MDATA))){U_DEL_MDATA = line.getOptionValue(L_U_DEL_MDATA);}else{System.out.println(" -- Error in Value for u_delmdata. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}	
 		
-	    if( line.hasOption( "commit" )) {SIMULATE = false;}
+	    if( line.hasOption( "commit" )) {SIMULATE = false;COMMIT=true;}
 
 	    if(NAME.equals("")){System.out.println(" -- Error: Missing Mandatory Parameter: -name. Use -h for help.");ERROR_FREE=false;}
 

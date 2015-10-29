@@ -69,6 +69,7 @@ public class GoRunCommand {
 		List<SearchResultItem> FilteredList = new ArrayList<SearchResultItem>();
 		try{
 			for(int i=0;i< GlobalList.size();i++){
+				
 				Job job = (Job) Objbroker.common.openObject(GlobalList.get(i).getName(), true);
 				
 				// Job type specific Attributes (Connection name for SQL job etc.)
@@ -178,10 +179,20 @@ public class GoRunCommand {
 		
 		for(int i=0;i<FilteredList.size();i++){
 			
+			
 			String ObjectName = FilteredList.get(i).getName();
 			String ObjectTitle = FilteredList.get(i).getTitle();
 			
-				UC4Object obj = Objbroker.common.openObject(ObjectName, false);
+			// Behavior: if COMMIT flag is ON, then Object needs to be reclaimed before it is Open for Write
+			// 			 if COMMIT flag is OFF, then no need to reclaim object as it can simply be open as read only
+			UC4Object obj;
+			if(ProcessSpecificCLI.COMMIT){
+					Objbroker.common.reclaimObject(FilteredList.get(i).getName());
+					obj = Objbroker.common.openObject(ObjectName, false);
+			}else{
+				obj = Objbroker.common.openObject(ObjectName, true);
+			}
+		
 				if(obj != null){
 					Job job = (Job) obj; 
 					boolean Skip = false;

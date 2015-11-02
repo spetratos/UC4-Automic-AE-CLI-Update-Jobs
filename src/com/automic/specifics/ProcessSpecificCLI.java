@@ -90,41 +90,41 @@ public class ProcessSpecificCLI extends ProcessSpecCLI{
 		if( line.hasOption( L_F_METADATA_VALUE )) {F_METADATA_VALUE = line.getOptionValue(L_F_METADATA_VALUE);}
 		// processing update parameters
 
-		if( line.hasOption( L_U_HOST )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_HOST))){U_HOST = line.getOptionValue(L_U_HOST);}else{System.out.println(" -- Error in Value for -u_host_to. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_LOGIN )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_LOGIN))){U_LOGIN = line.getOptionValue(L_U_LOGIN);}else{System.out.println(" -- Error in Value for -u_login_to. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_PROCESS )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_PROCESS))){U_PROCESS = line.getOptionValue(L_U_PROCESS);}else{System.out.println(" -- Error in Value for u_process. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_TITLE )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_TITLE))){U_TITLE = line.getOptionValue(L_U_TITLE);}else{System.out.println(" -- Error in Value for u_title. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_QUEUE )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_QUEUE))){U_QUEUE = line.getOptionValue(L_U_QUEUE);}else{System.out.println(" -- Error in Value for u_queue. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_TZ )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_TZ))){U_TZ = line.getOptionValue(L_U_TZ);}else{System.out.println(" -- Error in Value for u_timezone. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_ADD_VARIABLE )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_ADD_VARIABLE))){U_ADD_VARIABLE = line.getOptionValue(L_U_ADD_VARIABLE);}else{System.out.println(" -- Error in Value for u_addvar. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_UPD_VARIABLE )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_UPD_VARIABLE))){U_UPD_VARIABLE = line.getOptionValue(L_U_UPD_VARIABLE);}else{System.out.println(" -- Error in Value for u_updvar. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_DEL_VARIABLE )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_DEL_VARIABLE))){U_DEL_VARIABLE = line.getOptionValue(L_U_DEL_VARIABLE);}else{System.out.println(" -- Error in Value for u_delvar. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_HOST )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_HOST))){U_HOST = line.getOptionValue(L_U_HOST);}else{System.out.println(" -- Error in Value for "+L_U_HOST+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_LOGIN )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_LOGIN))){U_LOGIN = line.getOptionValue(L_U_LOGIN);}else{System.out.println(" -- Error in Value for "+L_U_LOGIN+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_PROCESS )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_PROCESS))){U_PROCESS = line.getOptionValue(L_U_PROCESS);}else{System.out.println(" -- Error in Value for "+L_U_PROCESS+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_TITLE )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_TITLE))){U_TITLE = line.getOptionValue(L_U_TITLE);}else{System.out.println(" -- Error in Value for "+L_U_TITLE+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_QUEUE )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_QUEUE))){U_QUEUE = line.getOptionValue(L_U_QUEUE);}else{System.out.println(" -- Error in Value for "+L_U_QUEUE+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_TZ )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_TZ))){U_TZ = line.getOptionValue(L_U_TZ);}else{System.out.println(" -- Error in Value for "+L_U_TZ+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_ADD_VARIABLE )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_ADD_VARIABLE))){U_ADD_VARIABLE = line.getOptionValue(L_U_ADD_VARIABLE);}else{System.out.println(" -- Error in Value for "+L_U_ADD_VARIABLE+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_UPD_VARIABLE )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_UPD_VARIABLE))){U_UPD_VARIABLE = line.getOptionValue(L_U_UPD_VARIABLE);}else{System.out.println(" -- Error in Value for "+L_U_UPD_VARIABLE+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_DEL_VARIABLE )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_DEL_VARIABLE))){U_DEL_VARIABLE = line.getOptionValue(L_U_DEL_VARIABLE);}else{System.out.println(" -- Error in Value for "+L_U_DEL_VARIABLE+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
 
 		if( line.hasOption( L_U_PRIORITY )) {
 			if(consistencyUtils.isInteger(line.getOptionValue(L_U_PRIORITY))){U_PRIORITY = Integer.parseInt((line.getOptionValue(L_U_PRIORITY)));
-			}else{System.out.println(" -- Error: Cannot Update Priority to non Integer value..");ERROR_FREE=false;}}	
+			}else{System.out.println(" -- Error: Cannot Update "+L_U_PRIORITY+" to non Integer value..");ERROR_FREE=false;}}	
 		if( line.hasOption( L_U_MAXNUMBERRUN )) {
 			if(consistencyUtils.isInteger(line.getOptionValue(L_U_MAXNUMBERRUN))){U_MAXNUMBERRUN = Integer.parseInt((line.getOptionValue(L_U_MAXNUMBERRUN)));
-			}else{System.out.println(" -- Error: Cannot Update Max Parallel Runs to non Integer value..");ERROR_FREE=false;}}	
+			}else{System.out.println(" -- Error: Cannot Update "+L_U_MAXNUMBERRUN+" to non Integer value..");ERROR_FREE=false;}}	
 		if( line.hasOption( L_U_GENERATEATRUNTIME )) {
 			if(consistencyUtils.checkStringIsYorN(line.getOptionValue(L_U_GENERATEATRUNTIME))){U_GENERATEATRUNTIME = line.getOptionValue(L_U_GENERATEATRUNTIME);
-			}else{System.out.println(" -- Error: genatruntime needs to be set to Y or N..");ERROR_FREE=false;}}
+			}else{System.out.println(" -- Error: "+L_U_GENERATEATRUNTIME+" needs to be set to Y or N..");ERROR_FREE=false;}}
 		if( line.hasOption( L_U_ACTIVE )) {
 			if(consistencyUtils.checkStringIsYorN(line.getOptionValue(L_U_ACTIVE))){U_ACTIVE = line.getOptionValue(L_U_ACTIVE);
-			}else{System.out.println(" -- Error: active needs to be set to Y or N..");ERROR_FREE=false;}}
+			}else{System.out.println(" -- Error: "+L_U_ACTIVE+" needs to be set to Y or N..");ERROR_FREE=false;}}
 		
 		if( line.hasOption( L_U_RESTORE_PREVIOUS )) {U_RESTORE_PREVIOUS = true;}
 		if( line.hasOption( L_U_RESTORE_VERSION )) {
 			if(consistencyUtils.isInteger(line.getOptionValue(L_U_RESTORE_VERSION))){U_RESTORE_VERSION = Integer.parseInt((line.getOptionValue(L_U_RESTORE_VERSION)));
-			}else{System.out.println(" -- Error: Version Number should be .. a Number.");ERROR_FREE=false;}}	
+			}else{System.out.println(" -- Error: "+L_U_RESTORE_VERSION+" should be .. a Number.");ERROR_FREE=false;}}	
 
 		
-		if( line.hasOption( L_U_POSTPROCESS )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_POSTPROCESS))){U_POSTPROCESS = line.getOptionValue(L_U_POSTPROCESS);}else{System.out.println(" -- Error in Value for u_postprocess. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_PREPROCESS )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_PREPROCESS))){U_PREPROCESS = line.getOptionValue(L_U_PREPROCESS);}else{System.out.println(" -- Error in Value for u_postprocess. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_ARCH1 )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_ARCH1))){U_ARCH1 = line.getOptionValue(L_U_ARCH1);}else{System.out.println(" -- Error in Value for u_arch1. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_ARCH2 )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_ARCH2))){U_ARCH2 = line.getOptionValue(L_U_ARCH2);}else{System.out.println(" -- Error in Value for u_arch2. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_ADD_MDATA )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_ADD_MDATA))){U_ADD_MDATA = line.getOptionValue(L_U_ADD_MDATA);}else{System.out.println(" -- Error in Value for u_addmdata. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
-		if( line.hasOption( L_U_DEL_MDATA )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_DEL_MDATA))){U_DEL_MDATA = line.getOptionValue(L_U_DEL_MDATA);}else{System.out.println(" -- Error in Value for u_delmdata. Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}	
+		if( line.hasOption( L_U_POSTPROCESS )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_POSTPROCESS))){U_POSTPROCESS = line.getOptionValue(L_U_POSTPROCESS);}else{System.out.println(" -- Error in Value for "+L_U_POSTPROCESS+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_PREPROCESS )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_PREPROCESS))){U_PREPROCESS = line.getOptionValue(L_U_PREPROCESS);}else{System.out.println(" -- Error in Value for "+L_U_PREPROCESS+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_ARCH1 )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_ARCH1))){U_ARCH1 = line.getOptionValue(L_U_ARCH1);}else{System.out.println(" -- Error in Value for "+L_U_ARCH1+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_ARCH2 )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_ARCH2))){U_ARCH2 = line.getOptionValue(L_U_ARCH2);}else{System.out.println(" -- Error in Value for "+L_U_ARCH2+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_ADD_MDATA )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_ADD_MDATA))){U_ADD_MDATA = line.getOptionValue(L_U_ADD_MDATA);}else{System.out.println(" -- Error in Value for "+L_U_ADD_MDATA+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}
+		if( line.hasOption( L_U_DEL_MDATA )) {if(consistencyUtils.checkValueStructure(line.getOptionValue(L_U_DEL_MDATA))){U_DEL_MDATA = line.getOptionValue(L_U_DEL_MDATA);}else{System.out.println(" -- Error in Value for "+L_U_DEL_MDATA+". Expected: [\"OLD.NAME\",\"NEW.NAME\"] or [\"OLD*\",\"NEW\"]");ERROR_FREE=false;};}	
 		
 	    if( line.hasOption( "commit" )) {SIMULATE = false;COMMIT=true;}
 

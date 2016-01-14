@@ -16,6 +16,7 @@ import com.automic.AECredentials;
 import com.automic.ConnectionManager;
 import com.automic.objects.ObjectBroker;
 import com.automic.std.HelpLabels;
+import com.automic.std.ObjectUtils;
 import com.automic.std.ProcessStandardCLI;
 import com.automic.std.VersionUtils;
 import com.automic.std.consistencyUtils;
@@ -179,7 +180,6 @@ public class GoRunCommand {
 		
 		for(int i=0;i<FilteredList.size();i++){
 			
-			
 			String ObjectName = FilteredList.get(i).getName();
 			String ObjectTitle = FilteredList.get(i).getTitle();
 			
@@ -199,6 +199,30 @@ public class GoRunCommand {
 					
 					System.out.println(" ++  => Processing Matching JOBS: [ " + ObjectName +" | " + ObjectTitle +" ] ");
 
+					if(!Skip && ProcessSpecificCLI.D_ATTRIBUTES){
+						ObjectUtils.displayJobAttr(job);
+					}
+					if(!Skip && ProcessSpecificCLI.D_HEADER){
+						ObjectUtils.displayJobHeader(job);
+					}
+					if(!Skip && ProcessSpecificCLI.D_VARIABLES){
+						ObjectUtils.displayJobVariables(job);
+					}
+					if(!Skip && ProcessSpecificCLI.D_PROCESS){
+						ObjectUtils.displayJobProcess(job);
+					}
+					if(!Skip && ProcessSpecificCLI.D_PREPROCESS){
+						ObjectUtils.displayJobPreProcess(job);
+					}
+					if(!Skip && ProcessSpecificCLI.D_POSTPROCESS){
+						ObjectUtils.displayJobPostProcess(job);
+					}
+					if(!Skip && ProcessSpecificCLI.D_RUNTIME){
+						ObjectUtils.displayJobRuntime(job);
+					}
+					if(!Skip && ProcessSpecificCLI.D_SPECIFIC){
+						ObjectUtils.displayJobSpecific(job);
+					}
 					if(!Skip && ProcessSpecificCLI.U_RESTORE_PREVIOUS){
 						System.out.println("\t ++ UPDATE: Job Marked for Restore to Previous Version: [ " + job.getName() + " | " + job.header().getTitle() + " ]" );
 						if(ProcessSpecificCLI.COMMIT){Objbroker.common.restorePreviousVersion(job.getName());}

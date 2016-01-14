@@ -64,6 +64,16 @@ public class ProcessSpecificCLI extends ProcessSpecCLI{
 		options.addOption( L_U_ADD_MDATA, true,  HelpLabels.OPTIONAL+HelpLabels.VARIABLE_UPDATE+ "Add Metadata Tag.");
 		options.addOption( L_U_DEL_MDATA, true,  HelpLabels.OPTIONAL+HelpLabels.STD_UPDATE+ "Delete Metadata Tag.");
 		
+		options.addOption( L_D_ATTRIBUTES, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Content of Attributes Tab." );
+		options.addOption( L_D_HEADER, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Content of Header Tab." );
+		options.addOption( L_D_RUNTIME, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Content of Runtime Tab." );
+		options.addOption( L_D_VARIABLES, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Content of Variables & prompts Tab."+"\n" );
+		options.addOption( L_D_PROCESS, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Content of Process Tab." );
+		options.addOption( L_D_PREPROCESS, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Content of PreProcess Tab." );
+		options.addOption( L_D_POSTPROCESS, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Content of PostProcess Tab." );
+		options.addOption( L_D_DOCUMENTATION, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Content of Documentation Tab." );
+		options.addOption( L_D_SPECIFIC, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Content of Specific Tab." );
+		
 		// parse the command line arguments
 				CommandLine line;
 				try{line = parser.parse( options, args );}
@@ -72,6 +82,16 @@ public class ProcessSpecificCLI extends ProcessSpecCLI{
 					return false;
 				}
 	 
+		if( line.hasOption( L_D_ATTRIBUTES )) {D_ATTRIBUTES = true;}
+		if( line.hasOption( L_D_HEADER )) {D_HEADER = true;}
+		if( line.hasOption( L_D_RUNTIME )) {D_RUNTIME = true;}
+		if( line.hasOption( L_D_VARIABLES )) {D_VARIABLES = true;}
+		if( line.hasOption( L_D_PROCESS )) {D_PROCESS = true;}
+		if( line.hasOption( L_D_PREPROCESS )) {D_PREPROCESS = true;}
+		if( line.hasOption( L_D_POSTPROCESS )) {D_POSTPROCESS = true;}
+		if( line.hasOption( L_D_DOCUMENTATION )) {D_DOCUMENTATION = true;}
+		if( line.hasOption( L_D_SPECIFIC )) {D_SPECIFIC = true;}
+				
 		if( line.hasOption( L_NAME )) {NAME = line.getOptionValue(L_NAME);}
 		if( line.hasOption( L_F_NAME )) {F_NAME = line.getOptionValue(L_F_NAME);}
 		if( line.hasOption( L_F_HOST )) {F_HOST = line.getOptionValue(L_F_HOST);}

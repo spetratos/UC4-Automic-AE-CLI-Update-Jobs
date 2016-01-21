@@ -323,17 +323,18 @@ public class GoRunCommand {
 						System.out.println("\t ++ UPDATE: Job PostProcess Update From: \n"
 						+ job.getPostProcess() + "\n"
 						+ "\t ----- To: \n" +
-						newValue +"\n" );
-						job.setPostProcess(newValue);
+						newValue.replace("\\n", "\n") +"\n" );
+						job.setPostProcess(newValue.replace("\\n", "\n"));
 					}
 					if(!Skip && !ProcessSpecificCLI.U_PROCESS.equals("")){
 						String[] Patterns = consistencyUtils.getUpdatePattern(ProcessSpecificCLI.U_PROCESS);
 						String newValue = job.getProcess().replaceAll(Patterns[0], Patterns[1]);
+						
 						System.out.println("\t ++ UPDATE: Job Process Update From: \n"
 						+ job.getProcess() + "\n"
 						+ "\t ----- To: \n" +
-						newValue +"\n" );
-						job.setProcess(newValue);
+						newValue.replace("\\n", "\n") +"\n" );
+						job.setProcess(newValue.replace("\\n", "\n"));
 					}
 					
 					if(!Skip && !ProcessSpecificCLI.U_PREPROCESS.equals("")){
@@ -342,8 +343,8 @@ public class GoRunCommand {
 						System.out.println("\t ++ UPDATE: Job PreProcess Update From: \n"
 						+ job.getPreProcess() + "\n"
 						+ "\t ----- To: \n" +
-						newValue +"\n" );
-						job.setPreProcess(newValue);
+						newValue.replace("\\n", "\n") +"\n" );
+						job.setPreProcess(newValue.replace("\\n", "\n"));
 					}
 					if(!Skip && !ProcessSpecificCLI.U_QUEUE.equals("")){
 						String[] Patterns = consistencyUtils.getUpdatePattern(ProcessSpecificCLI.U_QUEUE);

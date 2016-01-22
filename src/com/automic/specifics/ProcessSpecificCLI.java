@@ -73,9 +73,10 @@ public class ProcessSpecificCLI extends ProcessSpecCLI{
 		options.addOption( L_D_POSTPROCESS, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Content of PostProcess Tab." );
 		options.addOption( L_D_DOCUMENTATION, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Content of Documentation Tab." );
 		options.addOption( L_D_SPECIFIC, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Content of Specific Tab." );
+		options.addOption( L_D_STATS, false, HelpLabels.OPTIONAL+HelpLabels.NO_UPDATE+"Show Statistics." );
 		
 		// parse the command line arguments
-				CommandLine line;
+				CommandLine line; 
 				try{line = parser.parse( options, args );}
 				catch(MissingArgumentException m){
 					System.out.println(" -- Error: " + m.getMessage());
@@ -91,6 +92,7 @@ public class ProcessSpecificCLI extends ProcessSpecCLI{
 		if( line.hasOption( L_D_POSTPROCESS )) {D_POSTPROCESS = true;}
 		if( line.hasOption( L_D_DOCUMENTATION )) {D_DOCUMENTATION = true;}
 		if( line.hasOption( L_D_SPECIFIC )) {D_SPECIFIC = true;}
+		if( line.hasOption( L_D_STATS )) {D_STATS = true;}
 				
 		if( line.hasOption( L_NAME )) {NAME = line.getOptionValue(L_NAME);}
 		if( line.hasOption( L_F_NAME )) {F_NAME = line.getOptionValue(L_F_NAME);}

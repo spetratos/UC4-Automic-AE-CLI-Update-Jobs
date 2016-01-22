@@ -37,6 +37,7 @@ import com.uc4.api.objects.Job;
 import com.uc4.api.objects.OCVPanel.CITValue;
 import com.uc4.api.objects.UC4Object;
 import com.uc4.communication.Connection;
+import com.uc4.communication.requests.GetLastRuntimes;
 import com.uc4.communication.requests.SearchObject;
 import com.uc4.communication.requests.VersionControlList;
 
@@ -201,6 +202,11 @@ public class GoRunCommand {
 
 					if(!Skip && ProcessSpecificCLI.D_ATTRIBUTES){
 						ObjectUtils.displayJobAttr(job);
+					}
+					if(!Skip && ProcessSpecificCLI.D_STATS){
+						GetLastRuntimes runtimes = Objbroker.statistics.getLastRuntimes(job.getName());
+						ObjectUtils.displayStats(Objbroker.statistics.getObjectStatistics(job.getName()),runtimes,job.getName()); 
+						   
 					}
 					if(!Skip && ProcessSpecificCLI.D_HEADER){
 						ObjectUtils.displayJobHeader(job);

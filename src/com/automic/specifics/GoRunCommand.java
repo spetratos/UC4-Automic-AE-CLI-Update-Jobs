@@ -198,7 +198,7 @@ public class GoRunCommand {
 					Job job = (Job) obj; 
 					boolean Skip = false;
 					
-					System.out.println(" ++  => Processing Matching JOBS: [ " + ObjectName +" | " + ObjectTitle +" ] ");
+					System.out.println("\n ++  => Processing Matching JOBS: [ " + ObjectName +" | " + ObjectTitle +" ] ");
 
 					if(!Skip && ProcessSpecificCLI.D_ATTRIBUTES){
 						ObjectUtils.displayJobAttr(job);
@@ -206,7 +206,7 @@ public class GoRunCommand {
 					if(!Skip && ProcessSpecificCLI.D_STATS){
 						GetLastRuntimes runtimes = Objbroker.statistics.getLastRuntimes(job.getName());
 						ObjectUtils.displayStats(Objbroker.statistics.getObjectStatistics(job.getName()),runtimes,job.getName()); 
-						   
+						    
 					}
 					if(!Skip && ProcessSpecificCLI.D_HEADER){
 						ObjectUtils.displayJobHeader(job);

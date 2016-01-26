@@ -41,7 +41,7 @@ import com.uc4.communication.requests.GetLastRuntimes;
 import com.uc4.communication.requests.SearchObject;
 import com.uc4.communication.requests.VersionControlList;
 
-public class GoRunCommand {
+public class GoRunCommand { 
 
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException, ParseException, XPathExpressionException, ParserConfigurationException, SAXException{
 		

@@ -2,31 +2,29 @@ package com.automic.specifics;
 
 public class Version {
 
-	public static String MajorVersion = "1";
-	public static String MinorVersion = "0";
-	public static String ReleaseNum = "5";
 	public static String ProgramName = "Update JOBS";
 	public static String Description = "Update JOBS Objects";
 	static String MinimumAEVersion = "9.0.0";
+static String VERSION = GoRunCommand.class.getPackage().getImplementationVersion();
 	
 	public static String getVersion(){
-		return MajorVersion+"."+MinorVersion+"."+ReleaseNum;
+		return VERSION; //MajorVersion+"."+MinorVersion+"."+ReleaseNum; 
 	}
 	
 	public static String getMajorVersion(){
-		return MajorVersion;
+		return VERSION;
 	}
 	
 	public static String getMinorVersion(){
-		return MinorVersion;
+		return VERSION;
 	}
 	
 	public static String getReleaseNum(){
-		return ReleaseNum;
+		return VERSION;
 	}
 	
 	public static String getName(){
-		return ProgramName;
+		return ProgramName; 
 	}
 	
 	public static String getDescription(){
